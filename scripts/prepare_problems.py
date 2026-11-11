@@ -5,7 +5,7 @@ import json
 import urllib.request
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parent.parent
 RAW = ROOT / "data" / "raw"
 PUBLIC = ROOT / "data" / "public"
 PRIVATE = ROOT / "data" / "private"
@@ -239,9 +239,9 @@ def main():
     print("\n===== DATASET READY =====")
     print("HumanEval: 164 problems")
     print("MBPP: 974 problems")
-    print("Total: 1138 problems")
+    print("Combined base dataset: 1138 problems")
     print()
-    print("Gemini input:")
+    print("Base public dataset:")
     print("data/public/problems.jsonl")
     print()
     print("Evaluation-only data:")

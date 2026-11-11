@@ -3,7 +3,7 @@ from pathlib import Path
 
 from datasets import load_dataset
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parent.parent
 PUBLIC = ROOT / "data" / "public"
 PRIVATE = ROOT / "data" / "private"
 

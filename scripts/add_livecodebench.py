@@ -3,7 +3,7 @@ from pathlib import Path
 
 from huggingface_hub import HfApi, hf_hub_download
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parent.parent
 PUBLIC = ROOT / "data" / "public"
 PRIVATE = ROOT / "data" / "private"
 

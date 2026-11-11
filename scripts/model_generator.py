@@ -107,7 +107,8 @@ if __name__ == "__main__":
     if not program.strip():
         raise RuntimeError("Model returned no code.")
 
-    output_dir = Path("generated")
+    project_root = Path(__file__).resolve().parent.parent
+    output_dir = project_root / "generated"
     output_dir.mkdir(exist_ok=True)
 
     # Store the raw response for later inspection.
