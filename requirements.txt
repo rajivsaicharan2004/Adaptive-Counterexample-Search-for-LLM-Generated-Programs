@@ -1,0 +1,6 @@
+openai>=1.30,<3
+anthropic>=0.50,<1
+google-genai>=1.20,<2
+python-dotenv>=1.0,<2
+datasets>=5.2,<6
+huggingface_hub>=0.30,<3
