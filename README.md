@@ -1,38 +1,92 @@
 # Adaptive Counterexample Search for LLM-Generated Programs
 
-Research workspace for generating Python programs with language models and
-preparing programming benchmarks for later evaluation.
+Research code for preparing programming benchmarks and generating candidate
+Python solutions with language models. The current Phase 1 work compares
+several prompting and sampling strategies. It does **not** yet execute
+generated programs, run benchmark tests, or search for counterexamples.
 
-## Project layout
+GitHub repository:
+[rajivsaicharan2004/Adaptive-Counterexample-Search-for-LLM-Generated-Programs](https://github.com/rajivsaicharan2004/Adaptive-Counterexample-Search-for-LLM-Generated-Programs)
+
+## Current status
+
+- Four benchmark datasets are prepared: HumanEval, MBPP, BigCodeBench, and
+  LiveCodeBench release v6.
+- The combined public problem file contains 3,333 records.
+- `scripts/` contains the original multi-provider sample generator and the
+  benchmark-preparation scripts.
+- [`phase1_generator.py`](./phase1_generator.py) generates Gemini candidates
+  using direct, sampling, diverse, or plan-then-code prompting.
+- The Phase 1 generator records prompts, candidate code, request metadata,
+  token usage when returned by the API, and static syntax/interface checks.
+- Candidate code is never executed by the generator. Benchmark evaluation and
+  adaptive counterexample search are future work.
+
+### Initial Phase 1 experiment: HumanEval/0
+
+Local run manifests currently record the following results:
+
+| Method | Candidates generated | Static checks passed |
+| --- | ---: | --- |
+| Direct | 1 | 1 |
+| Sampling | 5 | 5 |
+| Diverse | 5 | 5 |
+| Plan-then-code | 6 across two runs | 6 |
+| **Total** | **17** | **17** |
+
+An earlier direct request returned a temporary Gemini `503 UNAVAILABLE`;
+another direct request succeeded. Four initial sampling requests also returned
+503 errors, and were later resumed successfully. These counts describe
+generation and static checks only—not functional correctness. Experiment
+artifacts are in the local, Git-ignored `generated/` directory and are not
+published in this repository.
+
+## Repository layout
 
 ```text
 .
 ├── data/
-│   └── public/                 # Benchmark prompts and combined public index
-├── generated/                  # Local model outputs (not tracked by Git)
+│   └── public/
+│       ├── humaneval.jsonl
+│       ├── mbpp.jsonl
+│       ├── bigcodebench.jsonl
+│       ├── livecodebench.jsonl
+│       └── problems.jsonl
 ├── scripts/
-│   ├── model_generator.py      # Generate a sample program with an LLM
-│   ├── prepare_problems.py     # Prepare HumanEval and MBPP
-│   ├── add_bigcodebench.py     # Add BigCodeBench
-│   └── add_livecodebench.py    # Add LiveCodeBench
-├── .env.example
-└── requirements.txt
+│   ├── prepare_problems.py
+│   ├── add_bigcodebench.py
+│   ├── add_livecodebench.py
+│   └── model_generator.py
+├── phase1_generator.py
+├── requirements.txt
+└── .env.example
 ```
 
-Raw downloads, evaluation/reference data, virtual environments, API keys, and
-generated outputs are kept out of Git. The benchmark sources have their own
-terms; consult each source before redistributing its data.
+Local-only paths are excluded from Git:
+
+- `.env` stores API credentials.
+- `.venv/` stores the Python environment.
+- `data/raw/` stores original benchmark downloads.
+- `data/private/` stores reference solutions and evaluation tests.
+- `generated/` stores generated candidates, prompts, and run metadata.
+
+The public benchmark JSONL files are tracked in this repository. Check each
+benchmark's license and terms before redistributing or using it outside this
+research project.
 
 ## Setup
+
+Use Python 3.11 or newer. From the project root:
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
+python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 cp .env.example .env
 ```
 
-Add the API keys you plan to use to `.env`:
+Add credentials for the providers you intend to use to `.env`:
 
 ```dotenv
 OPENAI_API_KEY=
@@ -40,41 +94,192 @@ ANTHROPIC_API_KEY=
 GOOGLE_API_KEY=
 ```
 
-Never commit `.env` or paste API keys into source files.
+The Phase 1 Gemini generator accepts `GEMINI_API_KEY` or `GOOGLE_API_KEY`.
+You may optionally set `GEMINI_MODEL`; otherwise it defaults to
+`gemini-3.8-flash`. Never commit `.env`, put credentials in source code, or
+paste credentials into chat.
 
-## Prepare benchmarks
-
-Run these commands from the project root:
-
-```bash
-python scripts/prepare_problems.py
-python scripts/add_bigcodebench.py
-python scripts/add_livecodebench.py
-```
-
-The scripts create per-dataset public JSONL files and combine them in
-`data/public/problems.jsonl`. The current combined dataset contains 3,333
-problems:
-
-| Dataset | Problems |
-| --- | ---: |
-| HumanEval | 164 |
-| MBPP | 974 |
-| BigCodeBench | 1,140 |
-| LiveCodeBench | 1,055 |
-| **Total** | **3,333** |
-
-Evaluation/reference data is written under `data/private/` and is ignored by
-Git. LiveCodeBench's source files include hidden tests; the preparation script
-exports only public fields, but downloads the source files to the local
-Hugging Face cache. Do not send evaluation data to a model.
-
-## Generate a sample program
+Always use the project environment for commands, for example:
 
 ```bash
-python scripts/model_generator.py --model gemini
+.venv/bin/python phase1_generator.py --help
 ```
 
-Available providers are `gpt`, `claude`, and `gemini`. Results are saved under
-`generated/`. This command uses the sample problem in the script; it does not
-run benchmark evaluation.
+An unactivated system `python3` may not have the packages installed.
+
+## Benchmark datasets
+
+| Dataset | Records | Source / version |
+| --- | ---: | --- |
+| HumanEval | 164 | [openai/human-eval](https://github.com/openai/human-eval) |
+| MBPP | 974 | [google-research/MBPP](https://github.com/google-research/google-research/tree/master/mbpp) |
+| BigCodeBench | 1,140 | Hugging Face `bigcode/bigcodebench`, config `v0.1.4` |
+| LiveCodeBench | 1,055 | [livecodebench/code_generation_lite](https://huggingface.co/datasets/livecodebench/code_generation_lite), release v6 |
+| **Combined** | **3,333** | `data/public/problems.jsonl` |
+
+Each public record has a dataset and task identifier, a prompt, and available
+interface or metadata fields. The per-dataset files and combined file use
+JSON Lines: one JSON object per line.
+
+### Prepare or rebuild the data
+
+Run these commands from the repository root, in order:
+
+```bash
+.venv/bin/python scripts/prepare_problems.py
+.venv/bin/python scripts/add_bigcodebench.py
+.venv/bin/python scripts/add_livecodebench.py
+```
+
+`prepare_problems.py` downloads HumanEval and MBPP raw files as needed,
+verifies their SHA-256 digests and record counts, then writes public records
+and evaluation-only records separately.
+
+`add_bigcodebench.py` loads the `v0.1.4` dataset through Hugging Face
+`datasets`, writes public prompts and a private evaluation file, and appends
+new tasks to the combined public file.
+
+`add_livecodebench.py` reads the official v6 JSONL source files, exports
+public task fields and adds them to the combined file. LiveCodeBench's source
+records also contain private tests. The script does not copy those test values
+to its outputs, but the complete source files are downloaded into the local
+Hugging Face cache (about 4.49 GB at the time this workflow was run).
+
+**Important:** Re-running `prepare_problems.py` rebuilds the combined file
+from only HumanEval and MBPP. Run the BigCodeBench and LiveCodeBench scripts
+after it to restore all four datasets. Never give `data/private/`, raw source
+files, or hidden tests to a model.
+
+## Phase 1 candidate generation
+
+The Phase 1 generator selects a problem from `data/public/<dataset>.jsonl`,
+falling back to `data/public/problems.jsonl` when that per-dataset file is
+missing. It supports the four datasets listed above.
+
+### Methods
+
+| Method | Behavior | Requested temperature |
+| --- | --- | ---: |
+| `direct` | One code-generation request using the base prompt. | 0.2 |
+| `sampling` | Repeated independent requests using the same prompt. | 1.0 |
+| `diverse` | Requests add different algorithmic priorities, cycling through five strategy statements. | 0.85 |
+| `plan` | Requests a high-level plan, then asks for code following it. | 0.7 for the plan; 0.3 for code |
+
+These settings are experimental controls, not claims that one temperature is
+optimal. The low-temperature direct setting provides a relatively
+conservative baseline; the higher sampling setting encourages variation;
+diverse runs vary the explicit algorithmic goal; and plan runs test whether an
+intermediate plan changes the generated candidate. Sampling and diverse
+candidates each use one API request. Each plan candidate uses two. Provider
+behavior can still vary between requests.
+
+The base prompt asks for Python 3 code only, requests the task's named callable
+when an entry point is available, otherwise asks for the specified input/output
+interface, and tells the model not to access files, the network, or install
+packages. Starter code is included when available.
+
+### Run a no-cost dry run
+
+```bash
+.venv/bin/python phase1_generator.py \
+  --dataset humaneval \
+  --task-id HumanEval/0 \
+  --method all \
+  --candidates 1 \
+  --dry-run
+```
+
+A dry run validates and displays the selected task, model, method list, and
+planned request count. It makes no API calls and does not require an API key.
+
+### Generate candidates
+
+Run one candidate:
+
+```bash
+.venv/bin/python phase1_generator.py \
+  --dataset humaneval \
+  --task-id HumanEval/0 \
+  --method direct \
+  --max-calls 1
+```
+
+Generate five independent samples:
+
+```bash
+.venv/bin/python phase1_generator.py \
+  --dataset humaneval \
+  --task-id HumanEval/0 \
+  --method sampling \
+  --candidates 5 \
+  --max-calls 5
+```
+
+`--task-id` is optional; when omitted, the first matching record in the
+selected dataset file is used. Other options:
+
+| Option | Default | Purpose |
+| --- | --- | --- |
+| `--dataset` | `humaneval` | Select `humaneval`, `mbpp`, `bigcodebench`, or `livecodebench`. |
+| `--task-id` | First task | Select a full task ID, such as `HumanEval/0`. |
+| `--method` | `all` | Select `direct`, `sampling`, `diverse`, `plan`, or `all`. |
+| `--candidates` | `1` | Number per non-direct method; allowed range is 1–20. |
+| `--max-calls` | `5` | Reject a run whose planned API requests exceed this cap. |
+| `--model` | `GEMINI_MODEL` or `gemini-3.8-flash` | Override the Gemini model ID. |
+| `--max-output-tokens` | `4096` | Maximum output-token setting for each Gemini request. |
+| `--dry-run` | Off | Validate the selection and planned call count without making requests. |
+| `--resume` | None | Retry failed candidates from a matching prior run folder. |
+
+With `--method all`, one candidate each means five planned API calls: one each
+for direct, sampling, and diverse, plus two for plan-then-code. The call cap is
+a guard against accidental request volume and cost; raise it deliberately if
+the requested experiment needs more calls.
+
+### Resume failed candidates
+
+Each run gets a unique directory under `generated/phase1/` and a `manifest.json`.
+To retry only failed candidates from the sampling run, keep the same dataset,
+task, method, and model, and pass that run directory:
+
+```bash
+.venv/bin/python phase1_generator.py \
+  --dataset humaneval \
+  --task-id HumanEval/0 \
+  --method sampling \
+  --resume generated/phase1/<run-folder> \
+  --max-calls 4
+```
+
+The script checks the run's task, dataset, model, and problem hash before
+resuming. Successful candidates are retained; only failed candidates for the
+selected method are retried. Start with `--dry-run` to see how many requests
+will be made.
+
+### Output and validation
+
+Generated artifacts are saved under:
+
+```text
+generated/phase1/<run-id>_<task-id>/
+├── <method>_<index>.prompt.txt
+├── <method>_<index>.py
+├── <method>_<index>.json
+└── manifest.json
+```
+
+Plan runs also save plan prompt and response files. Per-candidate metadata
+records the model, task and dataset, method, requested temperature, timing,
+API usage metadata when available, and SHA-256 fingerprints of the problem and
+generated code.
+
+The only candidate checks currently performed are Python syntax parsing and,
+when a task has a named entry point, checking whether that function is present
+at module top level. These checks do **not** prove correctness, safety,
+constraint compliance, or passing benchmark tests. Generated code is not
+executed. Any future evaluation of generated programs must use an appropriate
+OS-level sandbox.
+
+The original multi-provider example remains available at
+[`scripts/model_generator.py`](./scripts/model_generator.py). It uses the
+provider IDs in that file and generates a sample `two_sum` program; it is
+separate from the dataset-driven Phase 1 generator.
