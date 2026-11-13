@@ -3,78 +3,160 @@
   "cases": [
     {
       "name": "two_simple_groups",
-      "args": ["()()"],
-      "expected": ["()", "()"]
+      "args": [
+        "()()"
+      ],
+      "expected": [
+        "()",
+        "()"
+      ]
     },
     {
       "name": "two_groups_with_spaces",
-      "args": ["() ()"],
-      "expected": ["()", "()"]
+      "args": [
+        "() ()"
+      ],
+      "expected": [
+        "()",
+        "()"
+      ]
     },
     {
       "name": "nested_and_simple",
-      "args": ["(())()"],
-      "expected": ["(())", "()"]
+      "args": [
+        "(())()"
+      ],
+      "expected": [
+        "(())",
+        "()"
+      ]
     },
     {
       "name": "deep_nested_and_simple",
-      "args": ["(((())))()"],
-      "expected": ["(((())))", "()"]
+      "args": [
+        "(((())))()"
+      ],
+      "expected": [
+        "(((())))",
+        "()"
+      ]
     },
     {
       "name": "nested_siblings",
-      "args": ["(()())(())"],
-      "expected": ["(()())", "(())"]
+      "args": [
+        "(()())(())"
+      ],
+      "expected": [
+        "(()())",
+        "(())"
+      ]
     },
     {
       "name": "official_example",
-      "args": ["( ) (( )) (( )( ))"],
-      "expected": ["()", "(())", "(()())"]
+      "args": [
+        "( ) (( )) (( )( ))"
+      ],
+      "expected": [
+        "()",
+        "(())",
+        "(()())"
+      ]
     },
     {
       "name": "three_mixed_groups",
-      "args": ["((()))(())()"],
-      "expected": ["((()))", "(())", "()"]
+      "args": [
+        "((()))(())()"
+      ],
+      "expected": [
+        "((()))",
+        "(())",
+        "()"
+      ]
     },
     {
       "name": "spaces_inside_group",
-      "args": ["( ( ) ( ) ) ()"],
-      "expected": ["(()())", "()"]
+      "args": [
+        "( ( ) ( ) ) ()"
+      ],
+      "expected": [
+        "(()())",
+        "()"
+      ]
     },
     {
       "name": "leading_trailing_spaces",
-      "args": ["  ( ( ) )  ( )   "],
-      "expected": ["(())", "()"]
+      "args": [
+        "  ( ( ) )  ( )   "
+      ],
+      "expected": [
+        "(())",
+        "()"
+      ]
     },
     {
       "name": "three_simple_groups",
-      "args": ["( )( )( )"],
-      "expected": ["()", "()", "()"]
+      "args": [
+        "( )( )( )"
+      ],
+      "expected": [
+        "()",
+        "()",
+        "()"
+      ]
     },
     {
       "name": "mixed_nested_depth",
-      "args": ["(()(()))()"],
-      "expected": ["(()(()))", "()"]
+      "args": [
+        "(()(()))()"
+      ],
+      "expected": [
+        "(()(()))",
+        "()"
+      ]
     },
     {
       "name": "alternating_depths",
-      "args": ["((()))(()())(())"],
-      "expected": ["((()))", "(()())", "(())"]
+      "args": [
+        "((()))(()())(())"
+      ],
+      "expected": [
+        "((()))",
+        "(()())",
+        "(())"
+      ]
     },
     {
       "name": "multiple_nested_groups",
-      "args": ["(())((()))(()())"],
-      "expected": ["(())", "((()))", "(()())"]
+      "args": [
+        "(())((()))(()())"
+      ],
+      "expected": [
+        "(())",
+        "((()))",
+        "(()())"
+      ]
     },
     {
       "name": "spaces_between_parentheses",
-      "args": ["( ( ( ) ) ) ( ( ) )"],
-      "expected": ["((()))", "(())"]
+      "args": [
+        "( ( ( ) ) ) ( ( ) )"
+      ],
+      "expected": [
+        "((()))",
+        "(())"
+      ]
     },
     {
       "name": "repeated_complex_groups",
-      "args": ["(()()) (()())"],
-      "expected": ["(()())", "(()())"]
+      "args": [
+        "(()()) (()())"
+      ],
+      "expected": [
+        "(()())",
+        "(()())"
+      ]
     }
-  ]
+  ],
+  "provenance": "independently_reviewed_development",
+  "provenance_note": "Existing 15 development cases previously manually reviewed in Phase 2A; not copied from official held-out assertions"
 }

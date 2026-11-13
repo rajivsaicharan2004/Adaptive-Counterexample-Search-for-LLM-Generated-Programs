@@ -1,0 +1,55 @@
+--- phase2d/sandbox.py
++++ phase2d/sandbox.py
+@@ -31,6 +31,15 @@
+ saved_err=os.dup(2)
+ null_fd=os.open("/dev/null",os.O_WRONLY)
+ coverage_lines=set()
++def _type_tree(value,depth=0):
++    kind=type(value).__name__
++    if depth>=6:
++        return {"kind":kind,"truncated":True}
++    if type(value) in (list,tuple):
++        items=[_type_tree(x,depth+1) for x in value[:128]]
++        return {"kind":kind,"items":items,"length":len(value),
++                "truncated":len(value)>128}
++    return {"kind":kind}
+ def tracer(frame,event,arg):
+     if event=="line" and frame.f_code.co_filename=="<candidate>":
+         coverage_lines.add(frame.f_lineno)
+@@ -50,6 +59,8 @@
+         value=fn(*payload["args"])
+         as_json=json.dumps(value,allow_nan=False)
+         record={"status":"ok","value":json.loads(as_json),"type":type(value).__name__}
++        if payload.get("describe_types",False):
++            record["type_tree"]=_type_tree(value)
+     finally:
+         sys.settrace(None)
+ except BaseException as exc:
+@@ -94,7 +105,8 @@
+ for case in payload["cases"]:
+     child={"code":payload["code"],"entry_point":payload["entry_point"],
+            "interface":payload["interface"],"args":case["args"],
+-           "coverage":bool(payload.get("coverage",False))}
++           "coverage":bool(payload.get("coverage",False)),
++           "describe_types":bool(payload.get("describe_types",False))}
+     started=time.perf_counter()
+     with tempfile.TemporaryFile(mode="w+b") as out, tempfile.TemporaryFile(mode="w+b") as err:
+         try:
+@@ -145,7 +157,7 @@
+                                    "Pull the pinned image once before continuing.")
+ 
+     def run(self, code: str, entry_point: str, interface: str, cases: list[dict],
+-            *, coverage: bool = False) -> tuple[list[dict], float]:
++            *, coverage: bool = False, describe_types: bool = False) -> tuple[list[dict], float]:
+         if interface not in ("callable", "leetcode_method"):
+             raise ValueError("Unsupported execution interface; add a dataset adapter")
+         if not entry_point or not entry_point.isidentifier():
+@@ -159,7 +171,7 @@
+                 raise ValueError("Cases must use JSON list arguments")
+         payload = {"code": code, "entry_point": entry_point, "interface": interface,
+                    "cases": cases, "child_runner": CHILD, "case_timeout": self.timeout,
+-                   "coverage": coverage}
++                   "coverage": coverage, "describe_types": describe_types}
+         try:
+             serialized = json.dumps(payload, allow_nan=False)
+         except (TypeError, ValueError) as exc:

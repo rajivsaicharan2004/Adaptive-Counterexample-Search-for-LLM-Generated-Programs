@@ -1,0 +1,18 @@
+{
+  "task_id": "REPLACE_WITH_REAL_TASK_ID",
+  "provenance": "independently_reviewed_development",
+  "reviewer": "REPLACE_WITH_REVIEWER_AND_DATE",
+  "comparator": {
+    "mode": "exact",
+    "abs_tol": 0,
+    "rel_tol": 0
+  },
+  "cases": [
+    {
+      "name": "independent_development_case_1",
+      "args": [1, 2],
+      "expected": 3,
+      "expected_type": "int"
+    }
+  ]
+}

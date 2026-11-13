@@ -87,25 +87,57 @@ def static_check(code, entry_point):
             "entry_point_present": (entry_point in names if entry_point else None)}
 
 
+def generation_status(finish_reason, checks):
+    if finish_reason != "STOP":
+        return "incomplete"
+    if not checks["syntax_ok"] or checks["entry_point_present"] is False:
+        return "invalid"
+    return "generated"
+
+
 def call_gemini(client, model, prompt, temperature, max_output_tokens):
     from google.genai import types
+
     start = time.perf_counter()
+
     response = client.models.generate_content(
         model=model,
         contents=prompt,
         config=types.GenerateContentConfig(
             temperature=temperature,
             max_output_tokens=max_output_tokens,
+            thinking_config=types.ThinkingConfig(
+                thinking_level="LOW"
+            ),
         ),
     )
+
     usage = getattr(response, "usage_metadata", None)
+    candidates = getattr(response, "candidates", None) or []
+    reason = (
+        getattr(candidates[0], "finish_reason", None)
+        if candidates else None
+    )
+
     return {
         "text": response.text or "",
-        "latency_seconds": round(time.perf_counter() - start, 3),
+        "latency_seconds": round(
+            time.perf_counter() - start, 3
+        ),
         "temperature_requested": temperature,
+        "thinking_level_requested": "LOW",
+        "finish_reason": (
+            getattr(reason, "value", str(reason))
+            if reason is not None else None
+        ),
         "usage": {
             name: getattr(usage, name, None) if usage else None
-            for name in ("prompt_token_count", "candidates_token_count", "thoughts_token_count", "total_token_count")
+            for name in (
+                "prompt_token_count",
+                "candidates_token_count",
+                "thoughts_token_count",
+                "total_token_count",
+            )
         },
     }
 
@@ -263,6 +295,11 @@ def main():
                     write_text(folder / f"{label}_plan.prompt.txt", plan_prompt)
                     plan = call_gemini(client, model, plan_prompt, 0.7, args.max_output_tokens)
                     stage_logs.append({"stage": "plan", **{k: v for k, v in plan.items() if k != "text"}})
+                    if plan["finish_reason"] != "STOP":
+                        raise RuntimeError(
+                            "Gemini plan did not finish normally: "
+                            f"{plan['finish_reason']!r}"
+                        )
                     if not plan["text"].strip():
                         raise RuntimeError("Gemini returned an empty plan")
                     write_text(folder / f"{label}_plan.txt", plan["text"])
@@ -274,8 +311,25 @@ def main():
                 if not code:
                     raise RuntimeError("Gemini returned no code")
                 write_text(folder / f"{label}.py", code + "\n")
-                meta.update(status="generated", code_sha256=sha256(code), **static_check(code, problem.get("entry_point")))
-                print(f"{label}: saved | syntax_ok={meta['syntax_ok']} | entry_point_present={meta['entry_point_present']}")
+                checks = static_check(code, problem.get("entry_point"))
+                status = generation_status(result["finish_reason"], checks)
+                meta.update(
+                    status=status,
+                    finish_reason=result["finish_reason"],
+                    code_sha256=sha256(code),
+                    **checks,
+                )
+                if status != "generated":
+                    meta["error_message"] = (
+                        f"Gemini response finish reason: {result['finish_reason']!r}"
+                        if status == "incomplete"
+                        else "Generated response failed syntax or interface validation"
+                    )
+                print(
+                    f"{label}: {status} | finish_reason={result['finish_reason']} "
+                    f"| syntax_ok={checks['syntax_ok']} "
+                    f"| entry_point_present={checks['entry_point_present']}"
+                )
             except Exception as exc:
                 meta.update(status="error", error_type=type(exc).__name__, error_message=str(exc)[:500])
                 print(f"{label}: ERROR {type(exc).__name__}: {str(exc)[:180]}")

@@ -243,6 +243,13 @@ selected dataset file is used. Other options:
 | `--dry-run` | Off | Validate the selection and planned call count without making requests. |
 | `--resume` | None | Retry failed candidates from a matching prior run folder. |
 
+Gemini requests use `thinking_level="LOW"` and record the response finish
+reason. A candidate is marked `generated` only when the response finished with
+`STOP` and the returned code passes Python syntax and required entry-point
+checks; incomplete or invalid responses remain recorded with their status.
+For a subsequent generation experiment that needs more room for code output,
+use `--max-output-tokens 8192`.
+
 With `--method all`, one candidate each means five planned API calls: one each
 for direct, sampling, and diverse, plus two for plan-then-code. The call cap is
 a guard against accidental request volume and cost; raise it deliberately if

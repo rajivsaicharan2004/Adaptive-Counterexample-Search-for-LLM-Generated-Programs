@@ -1,0 +1,90 @@
+{
+  "project": "Phase 2D upgrade overlay",
+  "version": "0.1.0",
+  "files": {
+    "README.md": {
+      "bytes": 11828,
+      "sha256": "5f5c3423de10043570d41203dca57d3a38aa1f99e062fa20827f0486f2b78bb7"
+    },
+    "configs/development_suite.template.json": {
+      "bytes": 376,
+      "sha256": "f1fda9ce033406d032cef403fda1821b987891ddc88986a2248ffd4e06b62e03"
+    },
+    "phase2d/__init__.py": {
+      "bytes": 96,
+      "sha256": "038a1af6b4984f8ba96d668c9aa824731b7d7f849b3ccad89ba9b07698b97145"
+    },
+    "phase2d/adapters.py": {
+      "bytes": 6649,
+      "sha256": "591c8d325bc8d4a19cf0f83340f0a7ca63377b3345456f4d6b0729893af43432"
+    },
+    "phase2d/candidates.py": {
+      "bytes": 4143,
+      "sha256": "e180c2bc555bc2da612c9c6dd1244cfcdc1d80f9c499def0d5b2838e0b200ed3"
+    },
+    "phase2d/engine.py": {
+      "bytes": 5668,
+      "sha256": "1885f2c182df2074d241eaf54a3c03ccd45e5667ed0eeeda6a2b952fda90fab0"
+    },
+    "phase2d/models.py": {
+      "bytes": 4335,
+      "sha256": "d4523dcc88b1aad0be41ce7ea3b482ad2df0e66d8151937cba6a383b9c8848de"
+    },
+    "phase2d/oracles.py": {
+      "bytes": 1043,
+      "sha256": "18f08941de99f5e0787f3c21f4b29c70de295836b102f805b9e3b1283282eb08"
+    },
+    "phase2d/sandbox.py": {
+      "bytes": 9311,
+      "sha256": "f92beaee0f5ceb998c34b4363a945b646bfc8bd8cf4ebf1f0bebff8e00b96bc3"
+    },
+    "phase2d/strategies.py": {
+      "bytes": 14480,
+      "sha256": "eb61ef2d8c49086f16d0c546edf6ade0b2848ce7789039e7eb55a8f1af94656a"
+    },
+    "phase2d_cli.py": {
+      "bytes": 3882,
+      "sha256": "8edb850b2b942efe1cd445c17e0f853f75f3bdc849cc08500bbc3eb267764c65"
+    },
+    "phase2d_environment.py": {
+      "bytes": 2750,
+      "sha256": "c613e7f9f083dd416776394aa7b185bbc367c377fe5729e09457ff74f840951a"
+    },
+    "phase2d_experiments.py": {
+      "bytes": 7422,
+      "sha256": "2a27e33b6970b6d8a69e039dbcf5471da6b0be058a09b0c02e8a97cc71579a3b"
+    },
+    "phase2d_freeze_splits.py": {
+      "bytes": 2220,
+      "sha256": "03301b04bd284bfba884cc099ef5955e7f89adbf221ddad4df55d028d8ff4e4f"
+    },
+    "phase2d_metrics.py": {
+      "bytes": 5569,
+      "sha256": "4c127290626413dfa84e218bce1afaf49344cc207e9a73811436223b8249d08f"
+    },
+    "phase2d_migrate_legacy.py": {
+      "bytes": 1357,
+      "sha256": "a78d9b0d9cb6893fadb63415ac203313c78b55634c30608d8a276ba2013b3138"
+    },
+    "phase2d_replay.py": {
+      "bytes": 3517,
+      "sha256": "13284981284fb14bb56e312a15eb5936dafe2fbc1eeb790af1da7d5a9c979be2"
+    },
+    "phase2d_shrink_cli.py": {
+      "bytes": 3161,
+      "sha256": "8667f8c317813ee4c3a2146e3305792770a125bf36d186f09423c8690dd86208"
+    },
+    "phase2d_splits.py": {
+      "bytes": 3840,
+      "sha256": "7893bc49229604f7ba834423d0a959044798ddfc911dd01f0a909b78e119947c"
+    },
+    "phase2d_strategy_cli.py": {
+      "bytes": 8494,
+      "sha256": "6eb306080f8d561e376c64320781a71a63d16468d753f41da51dd6a8b9ff79d6"
+    },
+    "phase2d_tests/test_phase2d.py": {
+      "bytes": 9327,
+      "sha256": "45721b1de16517cb89b03d85d83c82f5e4f65e1720a4dfd4c418418b9355bae6"
+    }
+  }
+}

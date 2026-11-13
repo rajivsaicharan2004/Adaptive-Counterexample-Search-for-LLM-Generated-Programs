@@ -1,0 +1,80 @@
+{
+  "task_id": "HumanEval/1",
+  "cases": [
+    {
+      "name": "two_simple_groups",
+      "args": ["()()"],
+      "expected": ["()", "()"]
+    },
+    {
+      "name": "two_groups_with_spaces",
+      "args": ["() ()"],
+      "expected": ["()", "()"]
+    },
+    {
+      "name": "nested_and_simple",
+      "args": ["(())()"],
+      "expected": ["(())", "()"]
+    },
+    {
+      "name": "deep_nested_and_simple",
+      "args": ["(((())))()"],
+      "expected": ["(((())))", "()"]
+    },
+    {
+      "name": "nested_siblings",
+      "args": ["(()())(())"],
+      "expected": ["(()())", "(())"]
+    },
+    {
+      "name": "official_example",
+      "args": ["( ) (( )) (( )( ))"],
+      "expected": ["()", "(())", "(()())"]
+    },
+    {
+      "name": "three_mixed_groups",
+      "args": ["((()))(())()"],
+      "expected": ["((()))", "(())", "()"]
+    },
+    {
+      "name": "spaces_inside_group",
+      "args": ["( ( ) ( ) ) ()"],
+      "expected": ["(()())", "()"]
+    },
+    {
+      "name": "leading_trailing_spaces",
+      "args": ["  ( ( ) )  ( )   "],
+      "expected": ["(())", "()"]
+    },
+    {
+      "name": "three_simple_groups",
+      "args": ["( )( )( )"],
+      "expected": ["()", "()", "()"]
+    },
+    {
+      "name": "mixed_nested_depth",
+      "args": ["(()(()))()"],
+      "expected": ["(()(()))", "()"]
+    },
+    {
+      "name": "alternating_depths",
+      "args": ["((()))(()())(())"],
+      "expected": ["((()))", "(()())", "(())"]
+    },
+    {
+      "name": "multiple_nested_groups",
+      "args": ["(())((()))(()())"],
+      "expected": ["(())", "((()))", "(()())"]
+    },
+    {
+      "name": "spaces_between_parentheses",
+      "args": ["( ( ( ) ) ) ( ( ) )"],
+      "expected": ["((()))", "(())"]
+    },
+    {
+      "name": "repeated_complex_groups",
+      "args": ["(()()) (()())"],
+      "expected": ["(()())", "(()())"]
+    }
+  ]
+}
