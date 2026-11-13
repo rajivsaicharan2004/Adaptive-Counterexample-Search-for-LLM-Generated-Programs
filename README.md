@@ -64,6 +64,7 @@ published in this repository.
 │   └── model_generator.py
 ├── phase1_generator.py
 ├── phase2a_validator.py
+├── phase2b1_validator.py
 ├── requirements.txt
 └── .env.example
 ```
@@ -361,6 +362,46 @@ perfectly safe: container isolation still depends on the host kernel, Docker,
 and the configured runtime. Use a disposable machine or stronger VM boundary
 for higher-risk code. Results from this small curated suite must not be
 presented as official benchmark scores.
+
+## Phase 2B-1: Hypothesis-generated development inputs
+
+`phase2b1_validator.py` generates additional valid inputs with Hypothesis for
+HumanEval/0 (`has_close_elements`) and HumanEval/1 (`separate_paren_groups`).
+It uses the Phase 2A reference loader and Docker executor. The reference
+oracle runs on each generated input first; candidates are scored against the
+reference output. It does not read official hidden tests or execute candidate
+code on the host. This is development testing, not official benchmark
+evaluation.
+
+Run a dry run first:
+
+```bash
+.venv/bin/python phase2b1_validator.py \
+  --task-id HumanEval/1 \
+  --runs generated/phase1/<run-folder> \
+  --dry-run
+```
+
+By default, Hypothesis requests 40 examples, Docker execution batches 10
+inputs at a time, and the script records the actual number of unique generated
+inputs. These are bounded by `--cases` (1–500) and `--batch-size` (1–20).
+Input generation is deterministic and disables the Hypothesis example
+database for reproducibility. Generated input corpora and reports are written
+under the ignored `results/phase2b/` directory.
+
+To run the reference and candidate checks, omit `--dry-run`:
+
+```bash
+.venv/bin/python phase2b1_validator.py \
+  --task-id HumanEval/1 \
+  --runs generated/phase1/<run-folder>
+```
+
+Synthetic diagnostic or fault-injection candidates are excluded unless
+`--include-diagnostics` is explicitly supplied. Hypothesis generation and
+oracle checking do not guarantee exhaustive coverage or correctness beyond
+the generated inputs. Shrinking, mutation, differential, and metamorphic
+testing are not implemented in this phase.
 
 The original multi-provider example remains available at
 [`scripts/model_generator.py`](./scripts/model_generator.py). It uses the
