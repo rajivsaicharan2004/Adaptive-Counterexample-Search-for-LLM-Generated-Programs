@@ -1,9 +1,10 @@
 # Adaptive Counterexample Search for LLM-Generated Programs
 
-Research code for preparing programming benchmarks and generating candidate
-Python solutions with language models. The current Phase 1 work compares
-several prompting and sampling strategies. It does **not** yet execute
-generated programs, run benchmark tests, or search for counterexamples.
+Research code for preparing programming benchmarks, generating candidate
+Python solutions with language models, and running an initial Docker-isolated
+development validation pilot. The current validation is limited to curated
+HumanEval/0 development cases; it is not an official benchmark evaluation or
+an adaptive counterexample search.
 
 GitHub repository:
 [rajivsaicharan2004/Adaptive-Counterexample-Search-for-LLM-Generated-Programs](https://github.com/rajivsaicharan2004/Adaptive-Counterexample-Search-for-LLM-Generated-Programs)
@@ -19,8 +20,11 @@ GitHub repository:
   using direct, sampling, diverse, or plan-then-code prompting.
 - The Phase 1 generator records prompts, candidate code, request metadata,
   token usage when returned by the API, and static syntax/interface checks.
-- Candidate code is never executed by the generator. Benchmark evaluation and
-  adaptive counterexample search are future work.
+- [`phase2a_validator.py`](./phase2a_validator.py) can execute selected
+  HumanEval/0 candidates inside a resource-limited Docker container against
+  manually curated development cases.
+- Full benchmark evaluation and adaptive counterexample search remain future
+  work.
 
 ### Initial Phase 1 experiment: HumanEval/0
 
@@ -46,6 +50,7 @@ published in this repository.
 ```text
 .
 ├── data/
+│   ├── development/           # Reviewed, non-held-out development cases
 │   └── public/
 │       ├── humaneval.jsonl
 │       ├── mbpp.jsonl
@@ -58,6 +63,7 @@ published in this repository.
 │   ├── add_livecodebench.py
 │   └── model_generator.py
 ├── phase1_generator.py
+├── phase2a_validator.py
 ├── requirements.txt
 └── .env.example
 ```
@@ -68,7 +74,9 @@ Local-only paths are excluded from Git:
 - `.venv/` stores the Python environment.
 - `data/raw/` stores original benchmark downloads.
 - `data/private/` stores reference solutions and evaluation tests.
+- `data/development/` stores reviewed development cases used by the validator.
 - `generated/` stores generated candidates, prompts, and run metadata.
+- `results/` stores local Phase 2A development reports.
 
 The public benchmark JSONL files are tracked in this repository. Check each
 benchmark's license and terms before redistributing or using it outside this
@@ -275,9 +283,84 @@ generated code.
 The only candidate checks currently performed are Python syntax parsing and,
 when a task has a named entry point, checking whether that function is present
 at module top level. These checks do **not** prove correctness, safety,
-constraint compliance, or passing benchmark tests. Generated code is not
-executed. Any future evaluation of generated programs must use an appropriate
-OS-level sandbox.
+constraint compliance, or passing benchmark tests. Phase 1 generation itself
+does not execute code. The optional Phase 2A pilot below executes candidates
+only inside a constrained container.
+
+## Phase 2A: isolated HumanEval development validation
+
+The validator supports `HumanEval/0` through `HumanEval/163`. `HumanEval/0`
+(`has_close_elements`) uses eight hand-selected development cases for empty
+and singleton inputs, separated and close values, unsorted pairs,
+exact-threshold behavior, duplicates, and negative values. These are
+development tests, not official HumanEval hidden tests or a held-out test set.
+
+Other tasks require an explicitly reviewed test file at
+`data/development/humaneval/HumanEval_<index>.json`. For example:
+
+```json
+{
+  "task_id": "HumanEval/1",
+  "cases": [
+    {
+      "name": "ordinary_case",
+      "args": ["input value"],
+      "expected": "expected value"
+    }
+  ]
+}
+```
+
+Each file must contain 1–30 uniquely named cases. Each case must have a string
+`name`, a JSON list of positional `args`, and an `expected` value. An optional
+`expected_type` string can explicitly specify the expected Python type. Add
+only independently reviewed development cases; never copy official
+held-out tests. The validator executes the canonical reference from
+`data/private/humaneval_evaluation.jsonl` in Docker as an oracle and requires
+it to agree with every expected value before candidate evaluation.
+The current `HumanEval_1.json` suite contains 15 reviewed examples for
+`separate_paren_groups`; it is included in the repository so the validation
+setup can be reproduced.
+
+Docker must be installed and running. The validator uses a pinned, locally
+available `python:3.11-slim` image and will not pull an image automatically.
+From the project root, first list candidates without executing them:
+
+```bash
+.venv/bin/python phase2a_validator.py \
+  --task-id HumanEval/0 \
+  --runs generated/phase1/<run-folder> \
+  --dry-run
+```
+
+Then run the development checks:
+
+```bash
+.venv/bin/python phase2a_validator.py \
+  --task-id HumanEval/0 \
+  --runs generated/phase1/<run-folder>
+```
+
+`--task-id` defaults to `HumanEval/0`. Multiple run folders can be passed
+after `--runs`. Only files named `direct_###.py`, `sampling_###.py`,
+`diverse_###.py`, or `plan_###.py` are considered. Every candidate must have
+metadata identifying the selected task.
+
+The Docker invocation has no network, no host filesystem mounts, a read-only
+container root, a small non-executable temporary filesystem, dropped
+capabilities, `no-new-privileges`, Docker's default seccomp profile, a
+non-root user, and limits on memory, CPU, processes, open files, per-case
+runtime, and total batch runtime. It runs a fresh Python process for each
+case. The validator never evaluates LiveCodeBench private tests or any
+official hidden test suite. Reports are written to `results/phase2a/` and are
+ignored by Git. Existing HumanEval/0 reports from the original eight-case
+suite remain unchanged when using the updated validator.
+
+These controls reduce risk but do not make execution of untrusted code
+perfectly safe: container isolation still depends on the host kernel, Docker,
+and the configured runtime. Use a disposable machine or stronger VM boundary
+for higher-risk code. Results from this small curated suite must not be
+presented as official benchmark scores.
 
 The original multi-provider example remains available at
 [`scripts/model_generator.py`](./scripts/model_generator.py). It uses the
