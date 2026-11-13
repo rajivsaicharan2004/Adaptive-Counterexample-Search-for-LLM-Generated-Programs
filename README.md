@@ -65,6 +65,10 @@ published in this repository.
 ├── phase1_generator.py
 ├── phase2a_validator.py
 ├── phase2b1_validator.py
+├── phase2b2_mutation.py
+├── phase2b3_differential.py
+├── phase2b4_metamorphic.py
+├── phase2b5_fault_benchmark.py
 ├── requirements.txt
 └── .env.example
 ```
@@ -400,8 +404,111 @@ To run the reference and candidate checks, omit `--dry-run`:
 Synthetic diagnostic or fault-injection candidates are excluded unless
 `--include-diagnostics` is explicitly supplied. Hypothesis generation and
 oracle checking do not guarantee exhaustive coverage or correctness beyond
-the generated inputs. Shrinking, mutation, differential, and metamorphic
-testing are not implemented in this phase.
+the generated inputs. Shrinking and metamorphic testing are not implemented
+in this phase.
+
+## Phase 2B-2: Reference-validated mutation testing
+
+`phase2b2_mutation.py` mutates reviewed HumanEval/0 or HumanEval/1 development
+inputs, verifies the reviewed seeds against the canonical reference, then
+labels each mutated input using that reference in the Phase 2A Docker
+environment. Candidates are evaluated against the same generated corpus.
+This is specification-aware development testing, not coverage-guided fuzzing
+or official benchmark evaluation; it does not call an LLM or use held-out
+tests.
+
+Start with a dry run:
+
+```bash
+.venv/bin/python phase2b2_mutation.py \
+  --task-id HumanEval/0 \
+  --runs generated/phase1/<run-folder> \
+  --mutations 40 \
+  --batch-size 10 \
+  --dry-run
+```
+
+Omit `--dry-run` to run the reference and candidate executions in Docker.
+Mutation generation is deterministic for a given `--seed` (default: 2026).
+The requested unique mutations are bounded by `--mutations` (1–500), and
+Docker batches by `--batch-size` (1–30). Input corpora and reports are saved
+under the ignored `results/phase2b/` directory. Synthetic diagnostic
+candidates are excluded unless `--include-diagnostics` is explicitly used.
+
+## Phase 2B-3: Oracle-checked differential testing
+
+`phase2b3_differential.py` runs multiple saved candidates against the same
+reviewed development inputs or a saved Phase 2B corpus. An independent
+canonical-reference run labels the inputs, so candidate disagreements can be
+distinguished from reference-verified candidate failures. Differences in
+exceptions and other execution statuses are also reported as behavioral
+disagreements. At least two eligible candidates are required; synthetic
+diagnostic candidates are excluded unless explicitly enabled.
+
+Run a dry-run first:
+
+```bash
+.venv/bin/python phase2b3_differential.py \
+  --task-id HumanEval/0 \
+  --runs generated/phase1/<run-folder-1> generated/phase1/<run-folder-2> \
+  --dry-run
+```
+
+Omit `--dry-run` to run the reference and candidates in Docker. By default,
+the validator uses the reviewed cases for the selected task. Optionally pass
+`--inputs results/phase2b/<corpus>_inputs.json` to compare candidates on a
+saved Phase 2B development corpus. Candidate outputs are always recomputed;
+any expected values in an input corpus are not trusted. `--max-cases` is
+bounded to 1–500 and `--batch-size` to 1–30. Reports are written under
+`results/phase2b/`. This is development testing only, not an official or
+held-out benchmark evaluation.
+
+## Phase 2B-4: Metamorphic development testing
+
+`phase2b4_metamorphic.py` creates related input pairs for HumanEval/0 or
+HumanEval/1 and checks candidate behavior against the task's metamorphic
+relations. It independently runs the canonical reference so relation
+violations can be reported separately from reference-confirmed candidate
+failures. An optional Phase 2B input corpus can be supplied with `--inputs`;
+otherwise it uses the reviewed development cases.
+
+```bash
+.venv/bin/python phase2b4_metamorphic.py \
+  --task-id HumanEval/1 \
+  --runs generated/phase1/<run-folder> \
+  --pairs 40 \
+  --batch-size 10 \
+  --seed 2026 \
+  --dry-run
+```
+
+Omit `--dry-run` to execute the reference and candidate in Docker.
+Diagnostic candidates require `--include-diagnostics`. Results are saved under
+`results/phase2b/`. These are development checks only, not official or
+held-out benchmark results.
+
+## Phase 2B-5: Controlled synthetic fault benchmark
+
+`phase2b5_fault_benchmark.py` compares property, mutation, differential, and
+metamorphic input methods on known synthetic mutants for HumanEval/0 and
+HumanEval/1. Declared witnesses are checked against the reference before
+scoring. This measures detection of the included synthetic faults, not real
+LLM accuracy, real-world bug prevalence, or held-out benchmark performance.
+
+```bash
+.venv/bin/python phase2b5_fault_benchmark.py \
+  --task-id all \
+  --budget 40 \
+  --seed 2026 \
+  --batch-size 10 \
+  --dry-run
+```
+
+Omit `--dry-run` to execute the benchmark in Docker. `--budget` must be an
+even number from 4 to 200; it controls candidate-plus-probe executions per
+mutant and method. Optional genuine Phase 1 candidate runs can be supplied
+with `--probe-run-0` and `--probe-run-1` for the differential probes. Input
+corpora and reports are saved under `results/phase2b/`.
 
 The original multi-provider example remains available at
 [`scripts/model_generator.py`](./scripts/model_generator.py). It uses the
