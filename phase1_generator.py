@@ -228,6 +228,9 @@ def main():
     if args.dry_run:
         print("DRY RUN complete: zero API calls made.")
         return
+    # phase2d_quarantine_guard:v1
+    from phase2d_quarantine_guard import require_task_permission
+    require_task_permission(ROOT, problem['task_id'], 'generate')
     if n_calls > args.max_calls:
         parser.error(f"This run requires {n_calls} calls, above --max-calls {args.max_calls}. Increase deliberately if intended.")
     api_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")

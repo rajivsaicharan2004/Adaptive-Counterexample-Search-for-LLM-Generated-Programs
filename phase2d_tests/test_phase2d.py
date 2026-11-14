@@ -6,6 +6,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 from phase2d.models import TaskSpec, Case, CostLedger, result_matches, value_equal, sha256_text
 from phase2d.adapters import public_task, load_development_suite, readiness, task_filename
@@ -104,9 +105,13 @@ class TestDatasetRegistry(unittest.TestCase):
 
     def test_engine_fake(self):
         fake=DummySandbox()
-        result=evaluate(self.root,"humaneval","HumanEval/0",
-                        ["generated/phase1/a_HumanEval_0"],fake,
-                        execute=True,batch_size=3)
+        with patch("phase2d_quarantine_guard.require_task_permission") as permission:
+            result=evaluate(self.root,"humaneval","HumanEval/0",
+                            ["generated/phase1/a_HumanEval_0"],fake,
+                            execute=True,batch_size=3)
+            permission.assert_called_once_with(
+                self.root.resolve(), "HumanEval/0", "evaluate"
+            )
         self.assertTrue(fake.ready)
         self.assertEqual(result["results"][0]["passed"],8)
         self.assertEqual(result["ledger"]["candidate_executions"],8)

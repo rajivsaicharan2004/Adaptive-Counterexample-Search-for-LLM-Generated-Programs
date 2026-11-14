@@ -23,6 +23,10 @@ def evaluate(root: Path, dataset: str, task_id: str, runs: list[str],
              batch_size: int = 10, include_diagnostics: bool = False,
              execute: bool = True, output_path: str | None = None) -> dict:
     root = root.resolve()
+    # phase2d_quarantine_guard:v1
+    if execute:
+        from phase2d_quarantine_guard import require_task_permission
+        require_task_permission(root, task_id, 'evaluate')
     if not 1 <= batch_size <= MAX_CASES_PER_BATCH:
         raise ValueError(f"Batch size must be in 1..{MAX_CASES_PER_BATCH}")
     spec = public_task(root, dataset, task_id)

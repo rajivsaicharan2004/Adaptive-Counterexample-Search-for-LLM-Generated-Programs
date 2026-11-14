@@ -78,6 +78,9 @@ def check_only() -> None:
 
 
 def execute(runs: list[str], batch_size: int) -> None:
+    # phase2d_quarantine_guard:v1
+    from phase2d_quarantine_guard import require_task_permission
+    require_task_permission(ROOT, TASK_ID, 'evaluate')
     status, partition, fingerprint = manifest_state()
     if status != "frozen" or partition != "development":
         raise SystemExit("BLOCKED: requires frozen manifest and development partition. Draft unchanged.")

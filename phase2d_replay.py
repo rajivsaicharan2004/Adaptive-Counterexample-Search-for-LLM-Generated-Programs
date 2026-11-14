@@ -35,6 +35,9 @@ def main():
     inputs=payload.get("inputs")
     if not isinstance(inputs,list) or not inputs or any(not valid_args(task,x) for x in inputs):
         p.error("Missing/invalid saved corpus")
+    # phase2d_quarantine_guard:v1
+    from phase2d_quarantine_guard import require_task_permission
+    require_task_permission(ROOT, task, 'evaluate')
     dataset="mbpp" if task.startswith("MBPP/") else "humaneval"
     spec=public_task(ROOT,dataset,task)
     candidate=discover(ROOT,[args.run],task)[0]

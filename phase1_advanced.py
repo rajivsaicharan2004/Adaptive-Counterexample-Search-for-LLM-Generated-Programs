@@ -391,6 +391,9 @@ def main():
     if args.dry_run:
         print("DRY RUN: no API calls, no files created")
         return
+    # phase2d_quarantine_guard:v1
+    from phase2d_quarantine_guard import require_task_permission
+    require_task_permission(ROOT, problem['task_id'], 'generate')
     key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
     if not key:
         parser.error("GEMINI_API_KEY or GOOGLE_API_KEY missing in .env")

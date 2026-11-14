@@ -1,0 +1,713 @@
+{
+  "task_id": "BigCodeBench/854",
+  "provenance": "independently_reviewed_development",
+  "basis": "public user-reviewed prose and example; independently derived; no official tests or reference solution used",
+  "approval": "APPROVED_FOR_BOUNDED_DEVELOPMENT_ONLY",
+  "scope": "bounded development pilot; n<=4; JSON-serializable inputs",
+  "strict_representation": "root tuple of (list-of-int sums, list-of-tuple-of-int permutations); follows public example; not official scoring",
+  "semantic_representation": "root length 2 with sums and permutations, accepted irrespective of inner tuple/list Python types; duplicate multiplicity preserved; sum-permutation association required",
+  "known_ambiguities": [
+    "public prose says list-of-list-of-int while example displays tuples",
+    "boolean elements subclass int; not yet evaluated",
+    "ordering of permutations unspecified",
+    "whether duplicate permutations should be preserved for repeated input requires policy review"
+  ],
+  "cases": [
+    {
+      "name": "empty",
+      "args": [
+        []
+      ],
+      "expected": {
+        "status": "ok",
+        "value": [
+          [],
+          []
+        ]
+      }
+    },
+    {
+      "name": "singleton_zero",
+      "args": [
+        [
+          0
+        ]
+      ],
+      "expected": {
+        "status": "ok",
+        "value": [
+          [
+            1
+          ],
+          [
+            [
+              0
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "name": "singleton_four",
+      "args": [
+        [
+          4
+        ]
+      ],
+      "expected": {
+        "status": "ok",
+        "value": [
+          [
+            24
+          ],
+          [
+            [
+              4
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "name": "two_distinct",
+      "args": [
+        [
+          0,
+          4
+        ]
+      ],
+      "expected": {
+        "status": "ok",
+        "value": [
+          [
+            25,
+            25
+          ],
+          [
+            [
+              0,
+              4
+            ],
+            [
+              4,
+              0
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "name": "two_repeated",
+      "args": [
+        [
+          2,
+          2
+        ]
+      ],
+      "expected": {
+        "status": "ok",
+        "value": [
+          [
+            4,
+            4
+          ],
+          [
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "name": "three_distinct",
+      "args": [
+        [
+          1,
+          2,
+          3
+        ]
+      ],
+      "expected": {
+        "status": "ok",
+        "value": [
+          [
+            9,
+            9,
+            9,
+            9,
+            9,
+            9
+          ],
+          [
+            [
+              1,
+              2,
+              3
+            ],
+            [
+              1,
+              3,
+              2
+            ],
+            [
+              2,
+              1,
+              3
+            ],
+            [
+              2,
+              3,
+              1
+            ],
+            [
+              3,
+              1,
+              2
+            ],
+            [
+              3,
+              2,
+              1
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "name": "three_with_repeats",
+      "args": [
+        [
+          0,
+          0,
+          1
+        ]
+      ],
+      "expected": {
+        "status": "ok",
+        "value": [
+          [
+            3,
+            3,
+            3,
+            3,
+            3,
+            3
+          ],
+          [
+            [
+              0,
+              0,
+              1
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              0
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "name": "four_distinct",
+      "args": [
+        [
+          0,
+          1,
+          2,
+          3
+        ]
+      ],
+      "expected": {
+        "status": "ok",
+        "value": [
+          [
+            10,
+            10,
+            10,
+            10,
+            10,
+            10,
+            10,
+            10,
+            10,
+            10,
+            10,
+            10,
+            10,
+            10,
+            10,
+            10,
+            10,
+            10,
+            10,
+            10,
+            10,
+            10,
+            10,
+            10
+          ],
+          [
+            [
+              0,
+              1,
+              2,
+              3
+            ],
+            [
+              0,
+              1,
+              3,
+              2
+            ],
+            [
+              0,
+              2,
+              1,
+              3
+            ],
+            [
+              0,
+              2,
+              3,
+              1
+            ],
+            [
+              0,
+              3,
+              1,
+              2
+            ],
+            [
+              0,
+              3,
+              2,
+              1
+            ],
+            [
+              1,
+              0,
+              2,
+              3
+            ],
+            [
+              1,
+              0,
+              3,
+              2
+            ],
+            [
+              1,
+              2,
+              0,
+              3
+            ],
+            [
+              1,
+              2,
+              3,
+              0
+            ],
+            [
+              1,
+              3,
+              0,
+              2
+            ],
+            [
+              1,
+              3,
+              2,
+              0
+            ],
+            [
+              2,
+              0,
+              1,
+              3
+            ],
+            [
+              2,
+              0,
+              3,
+              1
+            ],
+            [
+              2,
+              1,
+              0,
+              3
+            ],
+            [
+              2,
+              1,
+              3,
+              0
+            ],
+            [
+              2,
+              3,
+              0,
+              1
+            ],
+            [
+              2,
+              3,
+              1,
+              0
+            ],
+            [
+              3,
+              0,
+              1,
+              2
+            ],
+            [
+              3,
+              0,
+              2,
+              1
+            ],
+            [
+              3,
+              1,
+              0,
+              2
+            ],
+            [
+              3,
+              1,
+              2,
+              0
+            ],
+            [
+              3,
+              2,
+              0,
+              1
+            ],
+            [
+              3,
+              2,
+              1,
+              0
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "name": "four_with_repeats",
+      "args": [
+        [
+          1,
+          1,
+          2,
+          2
+        ]
+      ],
+      "expected": {
+        "status": "ok",
+        "value": [
+          [
+            6,
+            6,
+            6,
+            6,
+            6,
+            6,
+            6,
+            6,
+            6,
+            6,
+            6,
+            6,
+            6,
+            6,
+            6,
+            6,
+            6,
+            6,
+            6,
+            6,
+            6,
+            6,
+            6,
+            6
+          ],
+          [
+            [
+              1,
+              1,
+              2,
+              2
+            ],
+            [
+              1,
+              1,
+              2,
+              2
+            ],
+            [
+              1,
+              2,
+              1,
+              2
+            ],
+            [
+              1,
+              2,
+              2,
+              1
+            ],
+            [
+              1,
+              2,
+              1,
+              2
+            ],
+            [
+              1,
+              2,
+              2,
+              1
+            ],
+            [
+              1,
+              1,
+              2,
+              2
+            ],
+            [
+              1,
+              1,
+              2,
+              2
+            ],
+            [
+              1,
+              2,
+              1,
+              2
+            ],
+            [
+              1,
+              2,
+              2,
+              1
+            ],
+            [
+              1,
+              2,
+              1,
+              2
+            ],
+            [
+              1,
+              2,
+              2,
+              1
+            ],
+            [
+              2,
+              1,
+              1,
+              2
+            ],
+            [
+              2,
+              1,
+              2,
+              1
+            ],
+            [
+              2,
+              1,
+              1,
+              2
+            ],
+            [
+              2,
+              1,
+              2,
+              1
+            ],
+            [
+              2,
+              2,
+              1,
+              1
+            ],
+            [
+              2,
+              2,
+              1,
+              1
+            ],
+            [
+              2,
+              1,
+              1,
+              2
+            ],
+            [
+              2,
+              1,
+              2,
+              1
+            ],
+            [
+              2,
+              1,
+              1,
+              2
+            ],
+            [
+              2,
+              1,
+              2,
+              1
+            ],
+            [
+              2,
+              2,
+              1,
+              1
+            ],
+            [
+              2,
+              2,
+              1,
+              1
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "name": "non_list_string",
+      "args": [
+        "0,4"
+      ],
+      "expected": {
+        "status": "exception",
+        "error_type": "TypeError"
+      }
+    },
+    {
+      "name": "non_list_integer",
+      "args": [
+        4
+      ],
+      "expected": {
+        "status": "exception",
+        "error_type": "TypeError"
+      }
+    },
+    {
+      "name": "noninteger_string",
+      "args": [
+        [
+          1,
+          "2"
+        ]
+      ],
+      "expected": {
+        "status": "exception",
+        "error_type": "TypeError"
+      }
+    },
+    {
+      "name": "noninteger_float",
+      "args": [
+        [
+          1,
+          2.5
+        ]
+      ],
+      "expected": {
+        "status": "exception",
+        "error_type": "TypeError"
+      }
+    },
+    {
+      "name": "noninteger_none",
+      "args": [
+        [
+          null
+        ]
+      ],
+      "expected": {
+        "status": "exception",
+        "error_type": "TypeError"
+      }
+    },
+    {
+      "name": "negative_single",
+      "args": [
+        [
+          -1
+        ]
+      ],
+      "expected": {
+        "status": "exception",
+        "error_type": "ValueError"
+      }
+    },
+    {
+      "name": "negative_mixed",
+      "args": [
+        [
+          2,
+          -1
+        ]
+      ],
+      "expected": {
+        "status": "exception",
+        "error_type": "ValueError"
+      }
+    }
+  ],
+  "review_policy": {
+    "domain": "JSON-transportable inputs; lists of 0..4 nonnegative exact Python ints, with bounded small test values",
+    "empty": "two empty lists, even though the mathematical empty permutation would otherwise exist",
+    "duplicates": "position-based permutations; repeated values retain multiplicity as itertools.permutations would",
+    "permutation_order": "ignored; matching uses multiset of (factorial sum, permutation) pairs",
+    "semantic_representation": "list or tuple permutation rows accepted after trusted JSON serialization",
+    "strict_representation": "tuple root and tuple permutation rows recorded separately; exploratory, not official scoring",
+    "exceptions": "TypeError for non-list/non-int input, ValueError for negative ints",
+    "boolean_inputs": "excluded: whether bool counts as int is unresolved",
+    "tuple_inputs": "excluded: JSON transport does not preserve tuple input types",
+    "mixed_invalid_inputs": "excluded: TypeError vs ValueError precedence ambiguous",
+    "scope": "independently reviewed *development* suite; not official BigCodeBench grading"
+  },
+  "source_proposal_sha256": "8bc59f4b4e790e2f92a65092ed9052871a72cca96d39bbe76d2f31c5e32411c6",
+  "reviewed_utc": "2026-11-13T19:53:38.006316+00:00",
+  "official_evaluation": false
+}

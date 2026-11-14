@@ -227,6 +227,9 @@ def main():
     if args.dry_run:
         print("DRY RUN: No Docker, model calls, network, private tests, or official evaluation")
         return
+    # phase2d_quarantine_guard:v1
+    from phase2d_quarantine_guard import require_task_permission
+    require_task_permission(ROOT, TASK_ID, 'evaluate')
     if not allowed:
         parser.error(message)
     if not candidates:

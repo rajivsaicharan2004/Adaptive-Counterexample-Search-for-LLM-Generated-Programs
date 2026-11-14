@@ -36,6 +36,9 @@ def main():
             print("BLOCKER:", warning)
         print("READY" if state["ready"] else "NOT READY")
         return
+    # phase2d_quarantine_guard:v1
+    from phase2d_quarantine_guard import require_task_permission
+    require_task_permission(ROOT, args.task_id, 'evaluate')
     split_file = (ROOT / args.splits_file).resolve()
     if split_file.is_file():
         import json

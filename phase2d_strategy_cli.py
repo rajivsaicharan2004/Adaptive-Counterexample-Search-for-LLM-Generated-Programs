@@ -36,6 +36,9 @@ def main():
                    help="Explicitly opt in to one LLM test-generation call")
     p.add_argument("--model", help="Gemini model ID; defaults to .env setting")
     p.add_argument("--dry-run", action="store_true")
+    # phase2d_quarantine_guard:v1
+    from phase2d_quarantine_guard import require_task_permission
+    require_task_permission(ROOT, args.task_id, 'evaluate')
     args = p.parse_args()
     if args.task_id not in strategies.SUPPORTED:
         p.error("Pilot strategies only support HumanEval/0, HumanEval/1, MBPP/545; add reviewed contract first")

@@ -30,6 +30,9 @@ def main():
     if not 1<=args.max_checks<=1000: p.error("max-checks must be 1..1000")
     input_args=json.loads(args.args_json)
     if not valid_args(args.task_id,input_args): p.error("Input violates reviewed contract")
+    # phase2d_quarantine_guard:v1
+    from phase2d_quarantine_guard import require_task_permission
+    require_task_permission(ROOT, args.task_id, 'evaluate')
     spec=public_task(ROOT,args.dataset,args.task_id)
     candidate=discover(ROOT,[args.run],args.task_id,include_diagnostics=args.include_diagnostics)[0]
     sandbox=DockerSandbox(); sandbox.ensure_ready()
