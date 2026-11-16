@@ -1,0 +1,1237 @@
+{
+  "candidate_generation_authorized": false,
+  "created_utc": "2026-11-14T22:57:21.605220+00:00",
+  "disposition_counts": {
+    "calibration_reserve_not_primary": 2,
+    "conditional_reserve_contract_required": 2,
+    "core_candidate_pending_approval": 10,
+    "defer_pending_contract_or_scope": 9,
+    "defer_targeted_overlap_and_contract_review": 1
+  },
+  "experimental_plan": {
+    "conditional_second_wave_dataset": "MBPP after independent contract and overlap review",
+    "conditional_second_wave_size": 2,
+    "proposed_first_batch_dataset": "HumanEval only until MBPP contracts resolved",
+    "proposed_first_batch_size": 10,
+    "reasons_for_size": "Prioritize verifiable reference semantics and diverse bug surfaces over an artificially balanced but underspecified dataset. Reconsider simple calibration reserves if high-difficulty tasks saturate budgets."
+  },
+  "guard_change_authorized": false,
+  "independent_human_review_completed": false,
+  "method": "Manual semantic reading of all 24 provided PUBLIC prompts; source prompt digests recomputed; no tests or reference solutions consulted; no execution performed.",
+  "newly_identified_targeted_overlap_review": {
+    "pairs": [
+      [
+        "MBPP/773",
+        "MBPP/534"
+      ],
+      [
+        "MBPP/773",
+        "MBPP/607"
+      ]
+    ],
+    "reason": "Substring occurrence/position prompt resembles previously quarantined literal-search/location tasks; verify before any release. Not an adjudicated duplicate.",
+    "status": "UNREVIEWED_POSSIBLE_TRANSFER_ONLY"
+  },
+  "oracle_or_candidate_execution_authorized": false,
+  "quarantine_change_authorized": false,
+  "ranked_review_shortlist": [
+    {
+      "rank": 1,
+      "scientific_value": "high",
+      "status": "core_candidate_pending_approval",
+      "task_id": "HumanEval/129"
+    },
+    {
+      "rank": 2,
+      "scientific_value": "high",
+      "status": "core_candidate_pending_approval",
+      "task_id": "HumanEval/132"
+    },
+    {
+      "rank": 3,
+      "scientific_value": "high",
+      "status": "core_candidate_pending_approval",
+      "task_id": "HumanEval/91"
+    },
+    {
+      "rank": 4,
+      "scientific_value": "high",
+      "status": "core_candidate_pending_approval",
+      "task_id": "HumanEval/69"
+    },
+    {
+      "rank": 5,
+      "scientific_value": "high",
+      "status": "core_candidate_pending_approval",
+      "task_id": "HumanEval/112"
+    },
+    {
+      "rank": 6,
+      "scientific_value": "high",
+      "status": "core_candidate_pending_approval",
+      "task_id": "HumanEval/90"
+    },
+    {
+      "rank": 7,
+      "scientific_value": "high",
+      "status": "core_candidate_pending_approval",
+      "task_id": "HumanEval/111"
+    },
+    {
+      "rank": 8,
+      "scientific_value": "high",
+      "status": "core_candidate_pending_approval",
+      "task_id": "HumanEval/74"
+    },
+    {
+      "rank": 9,
+      "scientific_value": "medium",
+      "status": "core_candidate_pending_approval",
+      "task_id": "HumanEval/148"
+    },
+    {
+      "rank": 10,
+      "scientific_value": "medium",
+      "status": "core_candidate_pending_approval",
+      "task_id": "HumanEval/150"
+    },
+    {
+      "rank": 11,
+      "scientific_value": "medium_to_high",
+      "status": "conditional_reserve_contract_required",
+      "task_id": "MBPP/532"
+    },
+    {
+      "rank": 12,
+      "scientific_value": "medium",
+      "status": "conditional_reserve_contract_required",
+      "task_id": "MBPP/244"
+    }
+  ],
+  "record_type": "PHASE2D_RESTRICTED_DEVELOPMENT_LLM_ASSISTED_TECHNICAL_FEASIBILITY_ASSESSMENT_V1_NOT_APPROVAL",
+  "reviewed_tasks": [
+    {
+      "approval_or_execution_authorized": false,
+      "dataset": "humaneval",
+      "independent_human_review": {
+        "decision": null,
+        "reviewer_identity": null,
+        "signed_review_artifact_sha256": null,
+        "status": "PENDING"
+      },
+      "public_prompt_from_packet": "\ndef minPath(grid, k):\n    \"\"\"\n    Given a grid with N rows and N columns (N >= 2) and a positive integer k, \n    each cell of the grid contains a value. Every integer in the range [1, N * N]\n    inclusive appears exactly once on the cells of the grid.\n\n    You have to find the minimum path of length k in the grid. You can start\n    from any cell, and in each step you can move to any of the neighbor cells,\n    in other words, you can go to cells which share an edge with you current\n    cell.\n    Please note that a path of length k means visiting exactly k cells (not\n    necessarily distinct).\n    You CANNOT go off the grid.\n    A path A (of length k) is considered less than a path B (of length k) if\n    after making the ordered lists of the values on the cells that A and B go\n    through (let's call them lst_A and lst_B), lst_A is lexicographically less\n    than lst_B, in other words, there exist an integer index i (1 <= i <= k)\n    such that lst_A[i] < lst_B[i] and for any j (1 <= j < i) we have\n    lst_A[j] = lst_B[j].\n    It is guaranteed that the answer is unique.\n    Return an ordered list of the values on the cells that the minimum path go through.\n\n    Examples:\n\n        Input: grid = [ [1,2,3], [4,5,6], [7,8,9]], k = 3\n        Output: [1, 2, 1]\n\n        Input: grid = [ [5,9,3], [4,1,6], [7,8,2]], k = 1\n        Output: [1]\n    \"\"\"\n",
+      "source_function_signatures": [
+        {
+          "function_name": "minPath",
+          "header_excerpt": "def minPath(grid, k):"
+        }
+      ],
+      "source_manifest_prompt_sha256": "670be092d953b4e25085e2d70bff872c2a78ad2bc3818d5de2842e79f95b1eb3",
+      "source_partition_at_review": "development",
+      "source_raw_prompt_sha256": "417c9ed701884d14aff5ce42047f77711731af279eeeba3d3b685b92a8f29adb",
+      "source_static_flags_not_verdicts": [],
+      "task_id": "HumanEval/129",
+      "technical_assessment": {
+        "contract": "minPath(grid,k) -> ordered list of exactly k visited cell values; N x N grid is a permutation of 1..N^2; adjacent moves, revisits allowed.",
+        "edge_inputs": [
+          "N=2 and N=3",
+          "k=1,2 and moderately larger than N^2",
+          "minimum cell in corner/edge/interior",
+          "repeated visits and lexicographic tie-prefix ordering"
+        ],
+        "expected_failure_modes": [
+          "incorrectly prohibit revisits",
+          "choose globally smallest next cell without adjacency",
+          "off-by-one path length",
+          "incorrect lexicographic optimization"
+        ],
+        "obstacles": [
+          "k upper bound unspecified; test-only bounds must be declared as a reviewed development-domain restriction."
+        ],
+        "oracle": "Use independent exhaustive path enumeration on small grids and k; separately derive and cross-check a greedy lexicographic-walk oracle for bounded and larger k. Do not certify by one algorithm alone.",
+        "overlap": "Passed heuristic risk-graph prefilter only; full semantic independence not established.",
+        "priority": 1,
+        "sandbox": "Pure Python, deterministic, bounded grid and k; set path/oracle complexity limits and Docker timeouts.",
+        "scientific_value": "high",
+        "status": "core_candidate_pending_approval"
+      }
+    },
+    {
+      "approval_or_execution_authorized": false,
+      "dataset": "humaneval",
+      "independent_human_review": {
+        "decision": null,
+        "reviewer_identity": null,
+        "signed_review_artifact_sha256": null,
+        "status": "PENDING"
+      },
+      "public_prompt_from_packet": "\ndef bf(planet1, planet2):\n    '''\n    There are eight planets in our solar system: the closerst to the Sun \n    is Mercury, the next one is Venus, then Earth, Mars, Jupiter, Saturn, \n    Uranus, Neptune.\n    Write a function that takes two planet names as strings planet1 and planet2. \n    The function should return a tuple containing all planets whose orbits are \n    located between the orbit of planet1 and the orbit of planet2, sorted by \n    the proximity to the sun. \n    The function should return an empty tuple if planet1 or planet2\n    are not correct planet names. \n    Examples\n    bf(\"Jupiter\", \"Neptune\") ==> (\"Saturn\", \"Uranus\")\n    bf(\"Earth\", \"Mercury\") ==> (\"Venus\")\n    bf(\"Mercury\", \"Uranus\") ==> (\"Venus\", \"Earth\", \"Mars\", \"Jupiter\", \"Saturn\")\n    '''\n",
+      "source_function_signatures": [
+        {
+          "function_name": "bf",
+          "header_excerpt": "def bf(planet1, planet2):"
+        }
+      ],
+      "source_manifest_prompt_sha256": "e91f3cdaf02eb6f474d3a3abb103cd83f6e20412e60eb5ca4d7b7ce5252baa6c",
+      "source_partition_at_review": "development",
+      "source_raw_prompt_sha256": "6cc1444376f53913622a070cd5c475b9cc33b4e199573da8e2b9051d689a314d",
+      "source_static_flags_not_verdicts": [],
+      "task_id": "HumanEval/148",
+      "technical_assessment": {
+        "contract": "bf(planet1,planet2) -> tuple of intervening planet names ordered Sun-outward; invalid name returns empty tuple.",
+        "edge_inputs": [
+          "adjacent planets",
+          "same planet",
+          "reversed endpoints",
+          "first/last planet",
+          "invalid names and empty strings"
+        ],
+        "expected_failure_modes": [
+          "omit reversed-order handling",
+          "include endpoints",
+          "return list or string instead of tuple",
+          "incorrect handling of unknown planets"
+        ],
+        "obstacles": [
+          "Example for singleton tuple is displayed without a Python trailing comma; clarify intended actual return type is tuple.",
+          "Case sensitivity not explicitly defined; restrict to exact proper names or review."
+        ],
+        "oracle": "Use a separately specified fixed eight-planet order and index slicing after normalizing endpoint order.",
+        "overlap": "Heuristic screening only; no proof of separation.",
+        "priority": 9,
+        "sandbox": "Pure Python and deterministic; no external libraries.",
+        "scientific_value": "medium",
+        "status": "core_candidate_pending_approval"
+      }
+    },
+    {
+      "approval_or_execution_authorized": false,
+      "dataset": "humaneval",
+      "independent_human_review": {
+        "decision": null,
+        "reviewer_identity": null,
+        "signed_review_artifact_sha256": null,
+        "status": "PENDING"
+      },
+      "public_prompt_from_packet": "\ndef x_or_y(n, x, y):\n    \"\"\"A simple program which should return the value of x if n is \n    a prime number and should return the value of y otherwise.\n\n    Examples:\n    for x_or_y(7, 34, 12) == 34\n    for x_or_y(15, 8, 5) == 5\n    \n    \"\"\"\n",
+      "source_function_signatures": [
+        {
+          "function_name": "x_or_y",
+          "header_excerpt": "def x_or_y(n, x, y):"
+        }
+      ],
+      "source_manifest_prompt_sha256": "9e4b1ac062dc2e140764496243c618bd82dc1975f67e6c65aca0e8779d795b1c",
+      "source_partition_at_review": "development",
+      "source_raw_prompt_sha256": "d3c5a3ef8fbe608f4c6ddb2b0209fe20ac537b827fb3252e805681c6c92c3a14",
+      "source_static_flags_not_verdicts": [],
+      "task_id": "HumanEval/150",
+      "technical_assessment": {
+        "contract": "x_or_y(n,x,y) -> x if n is prime, otherwise y.",
+        "edge_inputs": [
+          "n=1,2,3,4",
+          "perfect squares",
+          "large primes/composites within caps",
+          "x=y and x != y",
+          "zero/negative n only after domain approval"
+        ],
+        "expected_failure_modes": [
+          "treat 1 as prime",
+          "off-by-one square root",
+          "wrong branch or output preservation"
+        ],
+        "obstacles": [
+          "Public prompt does not specify negative values, zero, or non-integer n.",
+          "May have a relatively high pass rate; use as calibration rather than sole challenge task."
+        ],
+        "oracle": "Independent integer primality with trial division plus a separately checked sieve for bounded nonnegative n.",
+        "overlap": "Heuristic risk screen only.",
+        "priority": 10,
+        "sandbox": "Pure Python; limit n magnitude and input types, enforce Docker timeouts.",
+        "scientific_value": "medium",
+        "status": "core_candidate_pending_approval"
+      }
+    },
+    {
+      "approval_or_execution_authorized": false,
+      "dataset": "humaneval",
+      "independent_human_review": {
+        "decision": null,
+        "reviewer_identity": null,
+        "signed_review_artifact_sha256": null,
+        "status": "PENDING"
+      },
+      "public_prompt_from_packet": "\n\ndef sum_to_n(n: int):\n    \"\"\"sum_to_n is a function that sums numbers from 1 to n.\n    >>> sum_to_n(30)\n    465\n    >>> sum_to_n(100)\n    5050\n    >>> sum_to_n(5)\n    15\n    >>> sum_to_n(10)\n    55\n    >>> sum_to_n(1)\n    1\n    \"\"\"\n",
+      "source_function_signatures": [
+        {
+          "function_name": "sum_to_n",
+          "header_excerpt": "def sum_to_n(n: int):"
+        }
+      ],
+      "source_manifest_prompt_sha256": "6008bde8c086bec151ceeb4df954d79d990a564401520503f6741a6610d58cd3",
+      "source_partition_at_review": "development",
+      "source_raw_prompt_sha256": "864d47767142cb4e635dfefba79f1d7ce448f7cb99dac09c2695a5c96619994e",
+      "source_static_flags_not_verdicts": [],
+      "task_id": "HumanEval/60",
+      "technical_assessment": {
+        "contract": "sum_to_n(n) -> sum of integers from 1 through n; examples for n>=1.",
+        "edge_inputs": [
+          "n=1,2,large positive values",
+          "n<=0 only after contract review"
+        ],
+        "expected_failure_modes": [
+          "off-by-one endpoints",
+          "integer/floating behavior"
+        ],
+        "obstacles": [
+          "Trivial task likely to yield few genuine LLM failures; poor use of first expanded evaluation budget."
+        ],
+        "oracle": "Independent arithmetic series formula n*(n+1)//2 cross-checked against small iterative sums.",
+        "overlap": "Heuristic risk prefilter only.",
+        "priority": null,
+        "sandbox": "Pure Python deterministic.",
+        "scientific_value": "low_to_medium",
+        "status": "calibration_reserve_not_primary"
+      }
+    },
+    {
+      "approval_or_execution_authorized": false,
+      "dataset": "humaneval",
+      "independent_human_review": {
+        "decision": null,
+        "reviewer_identity": null,
+        "signed_review_artifact_sha256": null,
+        "status": "PENDING"
+      },
+      "public_prompt_from_packet": "\ndef is_nested(string):\n    '''\n    Create a function that takes a string as input which contains only square brackets.\n    The function should return True if and only if there is a valid subsequence of brackets \n    where at least one bracket in the subsequence is nested.\n\n    is_nested('[[]]') ➞ True\n    is_nested('[]]]]]]][[[[[]') ➞ False\n    is_nested('[][]') ➞ False\n    is_nested('[]') ➞ False\n    is_nested('[[][]]') ➞ True\n    is_nested('[[]][[') ➞ True\n    '''\n",
+      "source_function_signatures": [
+        {
+          "function_name": "is_nested",
+          "header_excerpt": "def is_nested(string):"
+        }
+      ],
+      "source_manifest_prompt_sha256": "adc4f6a8f8816a9b6e10c64c859ec35f7f626d6caa28990768ee73e54ad99b4d",
+      "source_partition_at_review": "development",
+      "source_raw_prompt_sha256": "ceeef7227e3911edf98ea8a7c714116780f3468053e4cccc66bbb2dfa185c334",
+      "source_static_flags_not_verdicts": [
+        "review_input_size_and_runtime_budget"
+      ],
+      "task_id": "HumanEval/132",
+      "technical_assessment": {
+        "contract": "is_nested(string) -> bool for string containing only square brackets, true if it contains a valid nested bracket subsequence as illustrated.",
+        "edge_inputs": [
+          "[]",
+          "[[]]",
+          "[][]",
+          "[[][]]",
+          "mismatched prefixes and suffixes",
+          "long runs of bracket characters",
+          "empty string"
+        ],
+        "expected_failure_modes": [
+          "mistake any two opens as nested",
+          "accept unbalanced fragments",
+          "ignore valid nested groups inside larger malformed strings"
+        ],
+        "obstacles": [
+          "Phrase \"valid subsequence\" is subtle; naive maximum stack depth on malformed strings may mislabel examples.",
+          "Confirm formal acceptance condition with independent review before evaluation."
+        ],
+        "oracle": "Develop two independently reviewed approaches: a precise parser/state-machine and exhaustive subsequence checking for short bracket strings; reconcile against all stated examples.",
+        "overlap": "Potential conceptual similarity to parenthesis tasks; heuristic risk prefilter does not prove zero semantic transfer.",
+        "priority": 2,
+        "sandbox": "Pure Python deterministic; cap string length for exhaustive oracle and use separate polynomial oracle for larger cases.",
+        "scientific_value": "high",
+        "status": "core_candidate_pending_approval"
+      }
+    },
+    {
+      "approval_or_execution_authorized": false,
+      "dataset": "humaneval",
+      "independent_human_review": {
+        "decision": null,
+        "reviewer_identity": null,
+        "signed_review_artifact_sha256": null,
+        "status": "PENDING"
+      },
+      "public_prompt_from_packet": "\ndef search(lst):\n    '''\n    You are given a non-empty list of positive integers. Return the greatest integer that is greater than \n    zero, and has a frequency greater than or equal to the value of the integer itself. \n    The frequency of an integer is the number of times it appears in the list.\n    If no such a value exist, return -1.\n    Examples:\n        search([4, 1, 2, 2, 3, 1]) == 2\n        search([1, 2, 2, 3, 3, 3, 4, 4, 4]) == 3\n        search([5, 5, 4, 4, 4]) == -1\n    '''\n",
+      "source_function_signatures": [
+        {
+          "function_name": "search",
+          "header_excerpt": "def search(lst):"
+        }
+      ],
+      "source_manifest_prompt_sha256": "16ac640af04cdc0c32c1800501d5eacb7f04046f25aff2b9e4b33ddaa8578870",
+      "source_partition_at_review": "development",
+      "source_raw_prompt_sha256": "62a5a2d0332d73a27da26ab1a46a7302d27bff719d9d354887d0a27a7cdc776a",
+      "source_static_flags_not_verdicts": [],
+      "task_id": "HumanEval/69",
+      "technical_assessment": {
+        "contract": "search(lst) -> largest positive value whose frequency in nonempty positive-integer list is >= its own value, otherwise -1.",
+        "edge_inputs": [
+          "no qualifying values",
+          "one qualifying value",
+          "multiple qualifying values",
+          "ties of frequency but different values",
+          "large values with low frequency",
+          "singleton list"
+        ],
+        "expected_failure_modes": [
+          "use > rather than >=",
+          "return frequency instead of element",
+          "choose highest frequency rather than largest eligible value"
+        ],
+        "obstacles": [
+          "Public domain promises nonempty positive integer list; do not silently add negative/zero tests as contracted."
+        ],
+        "oracle": "Independent Counter-based computation cross-checked with a simple O(n^2) counting oracle for short lists.",
+        "overlap": "Heuristic risk screen only.",
+        "priority": 4,
+        "sandbox": "Pure Python deterministic; cap list length and element magnitude.",
+        "scientific_value": "high",
+        "status": "core_candidate_pending_approval"
+      }
+    },
+    {
+      "approval_or_execution_authorized": false,
+      "dataset": "humaneval",
+      "independent_human_review": {
+        "decision": null,
+        "reviewer_identity": null,
+        "signed_review_artifact_sha256": null,
+        "status": "PENDING"
+      },
+      "public_prompt_from_packet": "\n\ndef car_race_collision(n: int):\n    \"\"\"\n    Imagine a road that's a perfectly straight infinitely long line.\n    n cars are driving left to right;  simultaneously, a different set of n cars\n    are driving right to left.   The two sets of cars start out being very far from\n    each other.  All cars move in the same speed.  Two cars are said to collide\n    when a car that's moving left to right hits a car that's moving right to left.\n    However, the cars are infinitely sturdy and strong; as a result, they continue moving\n    in their trajectory as if they did not collide.\n\n    This function outputs the number of such collisions.\n    \"\"\"\n",
+      "source_function_signatures": [
+        {
+          "function_name": "car_race_collision",
+          "header_excerpt": "def car_race_collision(n: int):"
+        }
+      ],
+      "source_manifest_prompt_sha256": "73cc2870162c2d1032b6e7bfcfb8e18e8d7e130deb7d22580f026e9fa4b618da",
+      "source_partition_at_review": "development",
+      "source_raw_prompt_sha256": "d4a9a6f17e6f65f8fa63bffa89d863ca691859fab85fff3f60f378d9340cc489",
+      "source_static_flags_not_verdicts": [],
+      "task_id": "HumanEval/41",
+      "technical_assessment": {
+        "contract": "car_race_collision(n) -> number of opposing-direction car-pair collisions under idealized equal speeds and unlimited trajectories.",
+        "edge_inputs": [
+          "n=1,2",
+          "n=0 only after contract review",
+          "larger n within integer caps"
+        ],
+        "expected_failure_modes": [
+          "count n instead of n squared",
+          "double count or exclude pairs"
+        ],
+        "obstacles": [
+          "Result is straightforward n^2; unlikely to provide informative genuine failures.",
+          "n domain not explicitly bounded."
+        ],
+        "oracle": "Count all n*n opposing pairs via elementary combinatorics; cross-check enumerated pairs for small n.",
+        "overlap": "Heuristic risk screen only.",
+        "priority": null,
+        "sandbox": "Pure Python deterministic.",
+        "scientific_value": "low",
+        "status": "calibration_reserve_not_primary"
+      }
+    },
+    {
+      "approval_or_execution_authorized": false,
+      "dataset": "humaneval",
+      "independent_human_review": {
+        "decision": null,
+        "reviewer_identity": null,
+        "signed_review_artifact_sha256": null,
+        "status": "PENDING"
+      },
+      "public_prompt_from_packet": "\ndef reverse_delete(s,c):\n    \"\"\"Task\n    We are given two strings s and c, you have to deleted all the characters in s that are equal to any character in c\n    then check if the result string is palindrome.\n    A string is called palindrome if it reads the same backward as forward.\n    You should return a tuple containing the result string and True/False for the check.\n    Example\n    For s = \"abcde\", c = \"ae\", the result should be ('bcd',False)\n    For s = \"abcdef\", c = \"b\"  the result should be ('acdef',False)\n    For s = \"abcdedcba\", c = \"ab\", the result should be ('cdedc',True)\n    \"\"\"\n",
+      "source_function_signatures": [
+        {
+          "function_name": "reverse_delete",
+          "header_excerpt": "def reverse_delete(s,c):"
+        }
+      ],
+      "source_manifest_prompt_sha256": "a363c6ac3bf8f70c9df33afa96bb8f9103f101726333206530602e165498d2bc",
+      "source_partition_at_review": "development",
+      "source_raw_prompt_sha256": "1a0e5435912522547470d17b91604c47dbff24e81d145a7f2b79c281eef6b033",
+      "source_static_flags_not_verdicts": [],
+      "task_id": "HumanEval/112",
+      "technical_assessment": {
+        "contract": "reverse_delete(s,c) -> (s with any characters appearing in c deleted, palindrome boolean for resulting string).",
+        "edge_inputs": [
+          "s empty",
+          "c empty",
+          "all characters removed",
+          "repeated characters",
+          "mixed case",
+          "single character",
+          "nonpalindrome becoming palindrome"
+        ],
+        "expected_failure_modes": [
+          "remove only first match",
+          "use substring rather than character membership",
+          "check palindrome before deletion",
+          "incorrect empty handling"
+        ],
+        "obstacles": [
+          "Empty-result palindrome convention should be recorded (normally true under standard definition) before evaluation."
+        ],
+        "oracle": "Independent character-set filtering and palindrome comparison, cross-checked by a second simple indexed implementation.",
+        "overlap": "Heuristic risk screen only.",
+        "priority": 5,
+        "sandbox": "Pure Python deterministic; cap string length.",
+        "scientific_value": "high",
+        "status": "core_candidate_pending_approval"
+      }
+    },
+    {
+      "approval_or_execution_authorized": false,
+      "dataset": "humaneval",
+      "independent_human_review": {
+        "decision": null,
+        "reviewer_identity": null,
+        "signed_review_artifact_sha256": null,
+        "status": "PENDING"
+      },
+      "public_prompt_from_packet": "\ndef total_match(lst1, lst2):\n    '''\n    Write a function that accepts two lists of strings and returns the list that has \n    total number of chars in the all strings of the list less than the other list.\n\n    if the two lists have the same number of chars, return the first list.\n\n    Examples\n    total_match([], []) ➞ []\n    total_match(['hi', 'admin'], ['hI', 'Hi']) ➞ ['hI', 'Hi']\n    total_match(['hi', 'admin'], ['hi', 'hi', 'admin', 'project']) ➞ ['hi', 'admin']\n    total_match(['hi', 'admin'], ['hI', 'hi', 'hi']) ➞ ['hI', 'hi', 'hi']\n    total_match(['4'], ['1', '2', '3', '4', '5']) ➞ ['4']\n    '''\n",
+      "source_function_signatures": [
+        {
+          "function_name": "total_match",
+          "header_excerpt": "def total_match(lst1, lst2):"
+        }
+      ],
+      "source_manifest_prompt_sha256": "db4f95f4b8c1d5a6f56380aa0401f3859befa6769726c83c7a01dc032083ac5d",
+      "source_partition_at_review": "development",
+      "source_raw_prompt_sha256": "9662ed6743a83d0c34963151a98c5cdc9d33053cf3b26212adb7ff8abf9e3617",
+      "source_static_flags_not_verdicts": [],
+      "task_id": "HumanEval/74",
+      "technical_assessment": {
+        "contract": "total_match(lst1,lst2) -> original list whose total character count across entries is smaller; tie returns lst1.",
+        "edge_inputs": [
+          "both empty",
+          "one empty",
+          "same total with different element counts",
+          "mixed case",
+          "long strings",
+          "lists of empty strings"
+        ],
+        "expected_failure_modes": [
+          "compare number of strings",
+          "incorrect tie selection",
+          "compare single maximal string",
+          "mutate input list"
+        ],
+        "obstacles": [
+          "Identity vs equality of returned original list should be specified if test harness can observe aliasing; value equality sufficient otherwise."
+        ],
+        "oracle": "Independent sums of lengths; cross-check with concatenation-length identity for bounded inputs.",
+        "overlap": "Heuristic risk screen only.",
+        "priority": 8,
+        "sandbox": "Pure Python deterministic; no side effects.",
+        "scientific_value": "high",
+        "status": "core_candidate_pending_approval"
+      }
+    },
+    {
+      "approval_or_execution_authorized": false,
+      "dataset": "humaneval",
+      "independent_human_review": {
+        "decision": null,
+        "reviewer_identity": null,
+        "signed_review_artifact_sha256": null,
+        "status": "PENDING"
+      },
+      "public_prompt_from_packet": "\ndef is_bored(S):\n    \"\"\"\n    You'll be given a string of words, and your task is to count the number\n    of boredoms. A boredom is a sentence that starts with the word \"I\".\n    Sentences are delimited by '.', '?' or '!'.\n   \n    For example:\n    >>> is_bored(\"Hello world\")\n    0\n    >>> is_bored(\"The sky is blue. The sun is shining. I love this weather\")\n    1\n    \"\"\"\n",
+      "source_function_signatures": [
+        {
+          "function_name": "is_bored",
+          "header_excerpt": "def is_bored(S):"
+        }
+      ],
+      "source_manifest_prompt_sha256": "ae27965d9dcb2b553f76cc52f6d7e5af8c6f7e5738cca0b5c13822ab854593ec",
+      "source_partition_at_review": "development",
+      "source_raw_prompt_sha256": "9445e82177f062459a801e24909bc856435701d82f1d67a9dad1f9d6fd0f6362",
+      "source_static_flags_not_verdicts": [],
+      "task_id": "HumanEval/91",
+      "technical_assessment": {
+        "contract": "is_bored(S) -> count sentences beginning with standalone word \"I\"; sentence delimiters are . ? !.",
+        "edge_inputs": [
+          "empty input",
+          "I at beginning",
+          "I after each delimiter",
+          "multiple punctuation",
+          "spaces/newlines",
+          "I within another word",
+          "trailing delimiter",
+          "lowercase i"
+        ],
+        "expected_failure_modes": [
+          "substring false positives",
+          "ignore ? and ! delimiters",
+          "mishandle extra whitespace",
+          "case confusion"
+        ],
+        "obstacles": [
+          "Whitespace around start of sentence and case sensitivity should be documented.",
+          "What counts as a word after punctuation requires review on unusual inputs."
+        ],
+        "oracle": "Independent sentence segmentation using punctuation delimiters and exact leading-token evaluation, checked by a separate small finite-state parser.",
+        "overlap": "Heuristic risk screen only.",
+        "priority": 3,
+        "sandbox": "Pure Python, deterministic; cap string length.",
+        "scientific_value": "high",
+        "status": "core_candidate_pending_approval"
+      }
+    },
+    {
+      "approval_or_execution_authorized": false,
+      "dataset": "humaneval",
+      "independent_human_review": {
+        "decision": null,
+        "reviewer_identity": null,
+        "signed_review_artifact_sha256": null,
+        "status": "PENDING"
+      },
+      "public_prompt_from_packet": "\ndef next_smallest(lst):\n    \"\"\"\n    You are given a list of integers.\n    Write a function next_smallest() that returns the 2nd smallest element of the list.\n    Return None if there is no such element.\n    \n    next_smallest([1, 2, 3, 4, 5]) == 2\n    next_smallest([5, 1, 4, 3, 2]) == 2\n    next_smallest([]) == None\n    next_smallest([1, 1]) == None\n    \"\"\"\n",
+      "source_function_signatures": [
+        {
+          "function_name": "next_smallest",
+          "header_excerpt": "def next_smallest(lst):"
+        }
+      ],
+      "source_manifest_prompt_sha256": "134b146d85ca1bac613d96c5e419eec6097cd5076901416d24c4e99400fdc891",
+      "source_partition_at_review": "development",
+      "source_raw_prompt_sha256": "c411484e97c83ae8e5869ae414e5687f429deda4f5fb49e367e60c85635fed1e",
+      "source_static_flags_not_verdicts": [],
+      "task_id": "HumanEval/90",
+      "technical_assessment": {
+        "contract": "next_smallest(lst) -> second DISTINCT smallest integer, or None if fewer than 2 distinct elements; inferred from [1,1] example.",
+        "edge_inputs": [
+          "empty list",
+          "one item",
+          "all identical",
+          "duplicates of smallest value",
+          "negative numbers",
+          "already sorted and reverse sorted"
+        ],
+        "expected_failure_modes": [
+          "return second element including duplicates",
+          "incorrect None handling",
+          "wrong negative ordering"
+        ],
+        "obstacles": [
+          "Confirm distinctness from examples with human reviewer; no issue observed in examples."
+        ],
+        "oracle": "Independent sorted-set implementation and distinct-minimum one-pass comparison.",
+        "overlap": "Heuristic risk screen only.",
+        "priority": 6,
+        "sandbox": "Pure Python deterministic; bounded lists.",
+        "scientific_value": "high",
+        "status": "core_candidate_pending_approval"
+      }
+    },
+    {
+      "approval_or_execution_authorized": false,
+      "dataset": "humaneval",
+      "independent_human_review": {
+        "decision": null,
+        "reviewer_identity": null,
+        "signed_review_artifact_sha256": null,
+        "status": "PENDING"
+      },
+      "public_prompt_from_packet": "\ndef histogram(test):\n    \"\"\"Given a string representing a space separated lowercase letters, return a dictionary\n    of the letter with the most repetition and containing the corresponding count.\n    If several letters have the same occurrence, return all of them.\n    \n    Example:\n    histogram('a b c') == {'a': 1, 'b': 1, 'c': 1}\n    histogram('a b b a') == {'a': 2, 'b': 2}\n    histogram('a b c a b') == {'a': 2, 'b': 2}\n    histogram('b b b b a') == {'b': 4}\n    histogram('') == {}\n\n    \"\"\"\n",
+      "source_function_signatures": [
+        {
+          "function_name": "histogram",
+          "header_excerpt": "def histogram(test):"
+        }
+      ],
+      "source_manifest_prompt_sha256": "03f92926d51519bbd8b443298f0cec9ce3557c9590073fd5d33ecc662bb55c75",
+      "source_partition_at_review": "development",
+      "source_raw_prompt_sha256": "c30d14cdaa12a3c8fd5b0cf5ce64622c84276ea5f9709d0494b836617938da59",
+      "source_static_flags_not_verdicts": [],
+      "task_id": "HumanEval/111",
+      "technical_assessment": {
+        "contract": "histogram(test) -> dict of all most-frequent space-separated lowercase letters with their maximum counts; empty string -> {}.",
+        "edge_inputs": [
+          "empty input",
+          "all tied",
+          "single dominant letter",
+          "two-way ties",
+          "repetition order",
+          "multiple whitespace if accepted"
+        ],
+        "expected_failure_modes": [
+          "pick only one tied maximum",
+          "count characters rather than tokens",
+          "incorrect empty behavior"
+        ],
+        "obstacles": [
+          "Contract states lowercase letter tokens separated by spaces; do not expand to arbitrary words without approval."
+        ],
+        "oracle": "Counter on whitespace-separated tokens, cross-checked against manual counting via sorted unique tokens.",
+        "overlap": "Heuristic risk screen only.",
+        "priority": 7,
+        "sandbox": "Pure Python deterministic.",
+        "scientific_value": "high",
+        "status": "core_candidate_pending_approval"
+      }
+    },
+    {
+      "approval_or_execution_authorized": false,
+      "dataset": "mbpp",
+      "independent_human_review": {
+        "decision": null,
+        "reviewer_identity": null,
+        "signed_review_artifact_sha256": null,
+        "status": "PENDING"
+      },
+      "public_prompt_from_packet": "Write a function to find the maximum sum of increasing subsequence from prefix till ith index and also including a given kth element which is after i, i.e., k > i .",
+      "source_function_signatures": [],
+      "source_manifest_prompt_sha256": "8fd51cdb663e696c90e3f5c7ca9b4815016bcbdfb3a0db9cba562bf280d94e71",
+      "source_partition_at_review": "development",
+      "source_raw_prompt_sha256": "7f5f80a0a70a9892b6178c45efc6a32e97cc306cda3829d1e77ed647cc57508e",
+      "source_static_flags_not_verdicts": [
+        "mbpp_one_line_spec_may_not_define_full_interface_or_edge_cases",
+        "public_prompt_lacks_machine_readable_function_signature",
+        "public_prompt_not_parseable_as_complete_python_module",
+        "review_input_size_and_runtime_budget"
+      ],
+      "task_id": "MBPP/306",
+      "technical_assessment": {
+        "contract": "One-line prompt describes maximum-sum increasing subsequence through prefix ending at i with mandatory kth element; function signature and exact output unspecified.",
+        "edge_inputs": [
+          "small repeated numbers",
+          "all decreasing",
+          "k=i+1",
+          "negative values after domain clarification"
+        ],
+        "expected_failure_modes": [
+          "misinterpret i/k",
+          "sum vs subsequence",
+          "off-by-one"
+        ],
+        "obstacles": [
+          "Critical ambiguity in i/k indexing, inclusion, subsequence definition, and output shape.",
+          "Do not invent a new benchmark contract in place of the source."
+        ],
+        "oracle": "No trustworthy oracle until argument order, role of i/k, strictly versus non-decreasing, and target return type are explicitly established.",
+        "overlap": "Heuristic risk screen only.",
+        "priority": null,
+        "sandbox": "Pure Python theoretically feasible after interface and time cap.",
+        "scientific_value": "high_if_clarified",
+        "status": "defer_pending_contract_or_scope"
+      }
+    },
+    {
+      "approval_or_execution_authorized": false,
+      "dataset": "mbpp",
+      "independent_human_review": {
+        "decision": null,
+        "reviewer_identity": null,
+        "signed_review_artifact_sha256": null,
+        "status": "PENDING"
+      },
+      "public_prompt_from_packet": "Write a function to find common elements in given nested lists. * list item * list item * list item * list item",
+      "source_function_signatures": [],
+      "source_manifest_prompt_sha256": "22bfb909ba8cc3869558ad65ea04e824db174cbf460674180b80b0972edac268",
+      "source_partition_at_review": "development",
+      "source_raw_prompt_sha256": "810f8259d05efe593d713b3800f0ce76aafa71fd9a7b36d2c1491337a958b27a",
+      "source_static_flags_not_verdicts": [
+        "mbpp_one_line_spec_may_not_define_full_interface_or_edge_cases",
+        "public_prompt_lacks_machine_readable_function_signature",
+        "public_prompt_not_parseable_as_complete_python_module"
+      ],
+      "task_id": "MBPP/111",
+      "technical_assessment": {
+        "contract": "One-line prompt requests common elements in nested lists but does not state list layout, multiplicity, order, or return type.",
+        "edge_inputs": [
+          "nested empty lists",
+          "duplicates",
+          "heterogeneous items after clarified domain"
+        ],
+        "expected_failure_modes": [
+          "flatten vs sublist intersection",
+          "deduplication errors"
+        ],
+        "obstacles": [
+          "Underspecified nested-list intersection and return-order/multiplicity."
+        ],
+        "oracle": "Block oracle implementation pending explicit interface and intersection semantics.",
+        "overlap": "Heuristic risk screen only.",
+        "priority": null,
+        "sandbox": "Pure Python after constraints; no program execution now.",
+        "scientific_value": "medium_if_clarified",
+        "status": "defer_pending_contract_or_scope"
+      }
+    },
+    {
+      "approval_or_execution_authorized": false,
+      "dataset": "mbpp",
+      "independent_human_review": {
+        "decision": null,
+        "reviewer_identity": null,
+        "signed_review_artifact_sha256": null,
+        "status": "PENDING"
+      },
+      "public_prompt_from_packet": "Write a function to find the n'th perrin number using recursion.",
+      "source_function_signatures": [],
+      "source_manifest_prompt_sha256": "347c5679e6d558c8c3ee6f392c64cfe4eb637c2047f2f58d24c63b64dd31cec7",
+      "source_partition_at_review": "development",
+      "source_raw_prompt_sha256": "0f2013e662d1a9ace08cd90a39dce074572192e57823d46033ce3ea29d6e00f6",
+      "source_static_flags_not_verdicts": [
+        "mbpp_one_line_spec_may_not_define_full_interface_or_edge_cases",
+        "public_prompt_lacks_machine_readable_function_signature",
+        "public_prompt_not_parseable_as_complete_python_module",
+        "review_input_size_and_runtime_budget"
+      ],
+      "task_id": "MBPP/385",
+      "technical_assessment": {
+        "contract": "One-line prompt requests nth Perrin number using recursion; base cases, n range, return type, and recursion requirements not provided.",
+        "edge_inputs": [
+          "n=0,1,2 if defined",
+          "n near recursion/time budget"
+        ],
+        "expected_failure_modes": [
+          "wrong initial values",
+          "off-by-one indexing",
+          "excessive recursion"
+        ],
+        "obstacles": [
+          "Base values and indexing not stated in supplied public prompt.",
+          "Recursion requirement vs equivalent algorithm matters."
+        ],
+        "oracle": "Use independently checked Perrin recurrence only after reviewing allowed bases and indexing; bound n for recursive performance.",
+        "overlap": "Heuristic risk screen only.",
+        "priority": null,
+        "sandbox": "Pure Python but naive recursion can grow exponentially; strict Docker timeout and n limit needed.",
+        "scientific_value": "medium_if_clarified",
+        "status": "defer_pending_contract_or_scope"
+      }
+    },
+    {
+      "approval_or_execution_authorized": false,
+      "dataset": "mbpp",
+      "independent_human_review": {
+        "decision": null,
+        "reviewer_identity": null,
+        "signed_review_artifact_sha256": null,
+        "status": "PENDING"
+      },
+      "public_prompt_from_packet": "Write a function to check if the two given strings are permutations of each other.",
+      "source_function_signatures": [],
+      "source_manifest_prompt_sha256": "d5ebeb6d91d1af3a8be6665d41507654982f2564fa29b3bd6fb2d696bc38c0c9",
+      "source_partition_at_review": "development",
+      "source_raw_prompt_sha256": "5f64a5ba75a6ea075ac527df88789f02b20f95398c52d5176665a5da1146e46a",
+      "source_static_flags_not_verdicts": [
+        "mbpp_one_line_spec_may_not_define_full_interface_or_edge_cases",
+        "public_prompt_lacks_machine_readable_function_signature",
+        "public_prompt_not_parseable_as_complete_python_module"
+      ],
+      "task_id": "MBPP/532",
+      "technical_assessment": {
+        "contract": "One-line prompt asks whether two strings are permutations of each other; bool result likely, but public prompt gives no signature, normalization rules, or examples.",
+        "edge_inputs": [
+          "empty strings",
+          "repeated letters",
+          "different lengths",
+          "case changes",
+          "whitespace/punctuation only after scope review"
+        ],
+        "expected_failure_modes": [
+          "set equality instead of multiset",
+          "ignore repeated letters",
+          "incorrect case normalization"
+        ],
+        "obstacles": [
+          "Missing function signature and explicit case/whitespace/unicode rules.",
+          "Requires contract approval before first benchmark batch."
+        ],
+        "oracle": "After reviewed normalization policy, compare independent frequency-map counts against sorted character lists.",
+        "overlap": "Heuristic risk prefilter only; compare to other anagram/permutation tasks if found.",
+        "priority": 11,
+        "sandbox": "Pure Python deterministic; cap lengths.",
+        "scientific_value": "medium_to_high",
+        "status": "conditional_reserve_contract_required"
+      }
+    },
+    {
+      "approval_or_execution_authorized": false,
+      "dataset": "mbpp",
+      "independent_human_review": {
+        "decision": null,
+        "reviewer_identity": null,
+        "signed_review_artifact_sha256": null,
+        "status": "PENDING"
+      },
+      "public_prompt_from_packet": "Write a function to check if the given string starts with a substring using regex.",
+      "source_function_signatures": [],
+      "source_manifest_prompt_sha256": "49a92ce73c1be5522635308a21b5af49c41e9c812999bfa1166ff7809af5be88",
+      "source_partition_at_review": "development",
+      "source_raw_prompt_sha256": "38e1e036a376ab73f70cf688fa700c3a6b3f45d475aa4e7d2e7022e87b9ee768",
+      "source_static_flags_not_verdicts": [
+        "mbpp_one_line_spec_may_not_define_full_interface_or_edge_cases",
+        "public_prompt_lacks_machine_readable_function_signature",
+        "public_prompt_not_parseable_as_complete_python_module",
+        "review_regex_matching_semantics"
+      ],
+      "task_id": "MBPP/823",
+      "technical_assessment": {
+        "contract": "One-line regex startswith check; unclear whether substring is literal, regex source, or how metacharacters are handled.",
+        "edge_inputs": [
+          "empty prefix",
+          "regex special characters",
+          "case variants",
+          "newlines"
+        ],
+        "expected_failure_modes": [
+          "use re.search rather than anchored match",
+          "fail to escape literal pattern"
+        ],
+        "obstacles": [
+          "Literal vs regex pattern interpretation unresolved.",
+          "Input and return types unspecified."
+        ],
+        "oracle": "Requires contract resolution between re.match and literal startswith; return type and exceptions unspecified.",
+        "overlap": "May transfer from previously examined regex/literal-match tasks; require targeted review.",
+        "priority": null,
+        "sandbox": "Python re is standard but regex worst-case runtime needs pattern/input caps.",
+        "scientific_value": "medium_if_clarified",
+        "status": "defer_pending_contract_or_scope"
+      }
+    },
+    {
+      "approval_or_execution_authorized": false,
+      "dataset": "mbpp",
+      "independent_human_review": {
+        "decision": null,
+        "reviewer_identity": null,
+        "signed_review_artifact_sha256": null,
+        "status": "PENDING"
+      },
+      "public_prompt_from_packet": "Write a function to check if a binary tree is balanced or not.",
+      "source_function_signatures": [],
+      "source_manifest_prompt_sha256": "766a8d52d812f238b69ade7c8a3c4e114377ce09254ac273d573e0b86effecac",
+      "source_partition_at_review": "development",
+      "source_raw_prompt_sha256": "5d5aed21979bcc36c4dfb611e9fe6789f6ebdd3e8c6411d2ff36d96877dffc7a",
+      "source_static_flags_not_verdicts": [
+        "mbpp_one_line_spec_may_not_define_full_interface_or_edge_cases",
+        "public_prompt_lacks_machine_readable_function_signature",
+        "public_prompt_not_parseable_as_complete_python_module"
+      ],
+      "task_id": "MBPP/367",
+      "technical_assessment": {
+        "contract": "One-line prompt asks if binary tree is balanced; node representation, definition of balance, and empty-tree behavior are unspecified.",
+        "edge_inputs": [
+          "empty tree",
+          "single node",
+          "left/right chains",
+          "near-balanced tree",
+          "deep trees under cap"
+        ],
+        "expected_failure_modes": [
+          "only compare root heights",
+          "incorrect null height",
+          "unbounded recursion"
+        ],
+        "obstacles": [
+          "No public function signature/tree-node class or balance definition."
+        ],
+        "oracle": "After specifying tree node schema and height-balance convention, use independent recursive heights with brute checks for small trees.",
+        "overlap": "Heuristic risk screen only.",
+        "priority": null,
+        "sandbox": "Pure Python if serialized node representation and recursion depth are controlled.",
+        "scientific_value": "high_if_clarified",
+        "status": "defer_pending_contract_or_scope"
+      }
+    },
+    {
+      "approval_or_execution_authorized": false,
+      "dataset": "mbpp",
+      "independent_human_review": {
+        "decision": null,
+        "reviewer_identity": null,
+        "signed_review_artifact_sha256": null,
+        "status": "PENDING"
+      },
+      "public_prompt_from_packet": "Write a python function to find the element that appears only once in a sorted array.",
+      "source_function_signatures": [],
+      "source_manifest_prompt_sha256": "96318ff6aabc90b93103924c049faef66c090beb8f6a5a6087a2f8b9e072ab55",
+      "source_partition_at_review": "development",
+      "source_raw_prompt_sha256": "b2ef2ad82556c3af687d860527f3adabba572b411e2d7aa2a4896cbf35c9796c",
+      "source_static_flags_not_verdicts": [
+        "mbpp_one_line_spec_may_not_define_full_interface_or_edge_cases",
+        "public_prompt_lacks_machine_readable_function_signature",
+        "public_prompt_not_parseable_as_complete_python_module"
+      ],
+      "task_id": "MBPP/119",
+      "technical_assessment": {
+        "contract": "One-line prompt requests the unique singleton in a sorted array; multiplicity assumptions and return if none/many unspecified.",
+        "edge_inputs": [
+          "length 1",
+          "singleton at endpoints/middle",
+          "duplicates",
+          "empty input after contract review"
+        ],
+        "expected_failure_modes": [
+          "binary search parity bug",
+          "wrong treatment of frequency !=2"
+        ],
+        "obstacles": [
+          "Whether every other item occurs exactly twice is not defined.",
+          "No signature or no-solution behavior."
+        ],
+        "oracle": "After establishing exactly-one-singleton and other-items-paired invariant, use count oracle and independently binary-search implementation.",
+        "overlap": "Heuristic risk screen only.",
+        "priority": null,
+        "sandbox": "Pure Python deterministic.",
+        "scientific_value": "medium_if_clarified",
+        "status": "defer_pending_contract_or_scope"
+      }
+    },
+    {
+      "approval_or_execution_authorized": false,
+      "dataset": "mbpp",
+      "independent_human_review": {
+        "decision": null,
+        "reviewer_identity": null,
+        "signed_review_artifact_sha256": null,
+        "status": "PENDING"
+      },
+      "public_prompt_from_packet": "Write a python function to find the next perfect square greater than a given number.",
+      "source_function_signatures": [],
+      "source_manifest_prompt_sha256": "9ace4dc72f74213123ddeb7b48c35ca75fb65b10eb92b93210167fb4a15033cc",
+      "source_partition_at_review": "development",
+      "source_raw_prompt_sha256": "b00c2446f6670b8ce207888a48aed373afad9444b21ecfc0617b82d946afd849",
+      "source_static_flags_not_verdicts": [
+        "mbpp_one_line_spec_may_not_define_full_interface_or_edge_cases",
+        "public_prompt_lacks_machine_readable_function_signature",
+        "public_prompt_not_parseable_as_complete_python_module"
+      ],
+      "task_id": "MBPP/244",
+      "technical_assessment": {
+        "contract": "One-line prompt asks for the next perfect square STRICTLY greater than a given number; numerical input domain and return type unspecified.",
+        "edge_inputs": [
+          "number is already square",
+          "just below square",
+          "zero",
+          "negative inputs only after specification approval",
+          "large integers"
+        ],
+        "expected_failure_modes": [
+          "return equal square for perfect-square input",
+          "floating rounding",
+          "incorrect zero handling"
+        ],
+        "obstacles": [
+          "Must confirm integer-only domain and strict comparison (the word greater is explicit).",
+          "Negative/floating input behavior unspecified."
+        ],
+        "oracle": "After integer-domain approval, use integer square root plus exact strict-greater check; cross-check bounded enumeration.",
+        "overlap": "Heuristic risk screen only.",
+        "priority": 12,
+        "sandbox": "Pure Python deterministic; cap integer digits/time.",
+        "scientific_value": "medium",
+        "status": "conditional_reserve_contract_required"
+      }
+    },
+    {
+      "approval_or_execution_authorized": false,
+      "dataset": "mbpp",
+      "independent_human_review": {
+        "decision": null,
+        "reviewer_identity": null,
+        "signed_review_artifact_sha256": null,
+        "status": "PENDING"
+      },
+      "public_prompt_from_packet": "Write a function to perform chunking of tuples each of size n.",
+      "source_function_signatures": [],
+      "source_manifest_prompt_sha256": "e0b52948a062d248717f1f7f3983da4b7c74773963e935df4eb9bd8c4f716d5b",
+      "source_partition_at_review": "development",
+      "source_raw_prompt_sha256": "226e9542b10015b7df0c46590e83ff66c55fd0e207ce4b68e0d6c85288b142e8",
+      "source_static_flags_not_verdicts": [
+        "mbpp_one_line_spec_may_not_define_full_interface_or_edge_cases",
+        "public_prompt_lacks_machine_readable_function_signature",
+        "public_prompt_not_parseable_as_complete_python_module"
+      ],
+      "task_id": "MBPP/921",
+      "technical_assessment": {
+        "contract": "One-line prompt requests chunking tuples into pieces of size n; input and leftover chunk semantics unspecified.",
+        "edge_inputs": [
+          "n=1",
+          "n>length",
+          "nonmultiple length",
+          "empty tuple",
+          "n=0 only if defined"
+        ],
+        "expected_failure_modes": [
+          "drop trailing chunk",
+          "wrong output type",
+          "off-by-one slices"
+        ],
+        "obstacles": [
+          "No function signature, exact output container, or leftover policy."
+        ],
+        "oracle": "After specifying return type and partial-tail policy, independently slice and concatenate back for invariant checks.",
+        "overlap": "Heuristic risk screen only.",
+        "priority": null,
+        "sandbox": "Pure Python deterministic.",
+        "scientific_value": "medium_if_clarified",
+        "status": "defer_pending_contract_or_scope"
+      }
+    },
+    {
+      "approval_or_execution_authorized": false,
+      "dataset": "mbpp",
+      "independent_human_review": {
+        "decision": null,
+        "reviewer_identity": null,
+        "signed_review_artifact_sha256": null,
+        "status": "PENDING"
+      },
+      "public_prompt_from_packet": "Write a function to find the occurrence and position of the substrings within a string.",
+      "source_function_signatures": [],
+      "source_manifest_prompt_sha256": "ddefeb71336ac7fe25ae0d935355dfc1e4893473d502ad48bafd58ca618b6d1c",
+      "source_partition_at_review": "development",
+      "source_raw_prompt_sha256": "7588551bf4f81f6d2aa88830e74625574a170bf1f9ce0e52f8dcfd3d371b6a68",
+      "source_static_flags_not_verdicts": [
+        "mbpp_one_line_spec_may_not_define_full_interface_or_edge_cases",
+        "public_prompt_lacks_machine_readable_function_signature",
+        "public_prompt_not_parseable_as_complete_python_module"
+      ],
+      "task_id": "MBPP/773",
+      "technical_assessment": {
+        "contract": "One-line prompt asks for occurrence and position of substrings within a string; unclear pattern input, return shape, overlapping matches, and indexing.",
+        "edge_inputs": [
+          "overlapping occurrences",
+          "empty substring",
+          "multiple substrings",
+          "no matches",
+          "repeated patterns"
+        ],
+        "expected_failure_modes": [
+          "miss overlapping matches",
+          "wrong 0/1-based positions",
+          "return first match only"
+        ],
+        "obstacles": [
+          "Missing function signature and return format.",
+          "Targeted semantic overlap audit needed against MBPP/534 and MBPP/607, previously identified literal-search/location variants; static shortlist filtering may have missed this."
+        ],
+        "oracle": "After independent contract review, use literal search enumeration and cross-check regex-escaped matches only where semantics agree.",
+        "overlap": "NEW_UNRESOLVED_POSSIBLE_TRANSFER: MBPP/773 <-> MBPP/534 and MBPP/607; do not release until reviewed.",
+        "priority": null,
+        "sandbox": "Pure Python possible with bounded strings and pattern counts.",
+        "scientific_value": "high_if_clarified",
+        "status": "defer_targeted_overlap_and_contract_review"
+      }
+    },
+    {
+      "approval_or_execution_authorized": false,
+      "dataset": "mbpp",
+      "independent_human_review": {
+        "decision": null,
+        "reviewer_identity": null,
+        "signed_review_artifact_sha256": null,
+        "status": "PENDING"
+      },
+      "public_prompt_from_packet": "Write a function to sort a given mixed list of integers and strings.",
+      "source_function_signatures": [],
+      "source_manifest_prompt_sha256": "e27bf4adb847904710cb7695b9d161f37115572844f087cfa04a8ede4586b713",
+      "source_partition_at_review": "development",
+      "source_raw_prompt_sha256": "8bc2cb101ec828497357b4fc6e43c843c22a61c5d87cd040d0d758dfd5dccbfa",
+      "source_static_flags_not_verdicts": [
+        "mbpp_one_line_spec_may_not_define_full_interface_or_edge_cases",
+        "public_prompt_lacks_machine_readable_function_signature",
+        "public_prompt_not_parseable_as_complete_python_module"
+      ],
+      "task_id": "MBPP/37",
+      "technical_assessment": {
+        "contract": "One-line prompt asks to sort mixed integers and strings; Python 3 mixed numeric/string ordering has no default total order.",
+        "edge_inputs": [
+          "mixed digits and integers",
+          "negative values",
+          "case variations",
+          "empty list"
+        ],
+        "expected_failure_modes": [
+          "TypeError on mixed list",
+          "unstated coercion policy"
+        ],
+        "obstacles": [
+          "Critical ordering ambiguity; do not silently choose a custom order."
+        ],
+        "oracle": "Cannot establish a unique expected order without numeric-vs-string ranking and conversion policy.",
+        "overlap": "Heuristic risk screen only.",
+        "priority": null,
+        "sandbox": "Pure Python deterministic only after specifying explicit comparison key.",
+        "scientific_value": "medium_if_clarified",
+        "status": "defer_pending_contract_or_scope"
+      }
+    },
+    {
+      "approval_or_execution_authorized": false,
+      "dataset": "mbpp",
+      "independent_human_review": {
+        "decision": null,
+        "reviewer_identity": null,
+        "signed_review_artifact_sha256": null,
+        "status": "PENDING"
+      },
+      "public_prompt_from_packet": "Write a function to check if any list element is present in the given list.",
+      "source_function_signatures": [],
+      "source_manifest_prompt_sha256": "af0450a10e83b8d21228052b766050dea822ab9557e380234b5fb10f48e8bcf5",
+      "source_partition_at_review": "development",
+      "source_raw_prompt_sha256": "6b1c1b7dda7543d26e17734d0d5a6b87e6a99d923ee4baa3bc630b2fa12172d4",
+      "source_static_flags_not_verdicts": [
+        "mbpp_one_line_spec_may_not_define_full_interface_or_edge_cases",
+        "public_prompt_lacks_machine_readable_function_signature",
+        "public_prompt_not_parseable_as_complete_python_module"
+      ],
+      "task_id": "MBPP/942",
+      "technical_assessment": {
+        "contract": "One-line prompt asks whether any list element is present in the given list; ambiguous whether two lists or one are intended.",
+        "edge_inputs": [
+          "empty lists",
+          "partial overlap",
+          "nested/unhashable elements after schema review"
+        ],
+        "expected_failure_modes": [
+          "misinterpret arity",
+          "wrong membership test"
+        ],
+        "obstacles": [
+          "As written, the single-list reading is nearly tautological; two-container meaning plausible but not stated.",
+          "Missing function signature and return semantics."
+        ],
+        "oracle": "No independent oracle until function arity and membership relation are clarified.",
+        "overlap": "Heuristic risk screen only.",
+        "priority": null,
+        "sandbox": "Pure Python; deterministic once contract is specified.",
+        "scientific_value": "low_until_clarified",
+        "status": "defer_pending_contract_or_scope"
+      }
+    }
+  ],
+  "schema_version": 1,
+  "scope_limitations": [
+    "Only prompt-level feasibility, not independent correctness certification.",
+    "Source-side family/complexity flags are heuristics and may not correlate with actual failure rates.",
+    "Known-risk graph prefilter does not prove absence of cross-partition contamination.",
+    "For MBPP the source packet contains only one-line descriptions, without executable signatures, reference solutions, or expected-output examples.",
+    "Independent human review, sandbox adapter implementation, and V3 guard authorization are not complete.",
+    "The proposed test categories are future development plans, not tests already run."
+  ],
+  "source_artifacts_modified": false,
+  "source_dataset_and_manifest_sha256": {
+    "data/public/bigcodebench.jsonl": "82bbc2921465d904f0c33a471a56503173a341674f8ee00e9fb7a15707b2898b",
+    "data/public/humaneval.jsonl": "322d76a16580331fcfd54bf187c56c324f0ea5c4ab13f185363c42c6b750108a",
+    "data/public/livecodebench.jsonl": "7a5999a6ad1d1a8b7902e0741c7d8db2a01afbace0440ba6a1b7e8a277c9dd23",
+    "data/public/mbpp.jsonl": "299d1f81e4b556beb1655c42642a9046b606c1e3fd31ad51378f1e26967f97fb",
+    "results/phase2d/splits.json": "c65578034f032b46ef7ad0865154d46e80156319f8d3f15c295d9b4c2d4eb747"
+  },
+  "source_packet_filename": "Pasted text(20261114-225553).txt",
+  "source_packet_sha256": "0be908f69bf7fcd3fdaaa9ed69e7d92a540b9ce1ce486d17d46a05e5e3d6f118",
+  "source_proposal_sha256": "3be9c55c8d835e52cca1c96f4249211ebadabfd8ab17a0f94a23f9d5db1cc024",
+  "split_freeze_authorized": false
+}

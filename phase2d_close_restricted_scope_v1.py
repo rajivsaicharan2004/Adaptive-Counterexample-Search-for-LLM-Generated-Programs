@@ -1,0 +1,375 @@
+#!/usr/bin/env python3
+"""Phase 2D: fail-closed, solo-researcher RESTRICTED DEVELOPMENT selection closure.
+
+This finalizes only the selection of eight pinned development task specifications.
+It DOES NOT freeze the full 3,333-task split, authorize candidate generation,
+change the original V3 policy, or claim an independent reviewer.
+
+Commands:
+  --preview   Verify the whole source chain; no changes.
+  --prepare   Create an INACTIVE owner acknowledgement template (new file only).
+  --attest    Interactively record explicit research-owner acceptance (only template changed).
+  --finalize  After OWNER accepts the template, write immutable scoped closure.
+  --check     Re-verify full evidence chain and scoped closure (read only).
+"""
+from __future__ import annotations
+
+import argparse
+from collections import Counter
+from datetime import datetime, timezone
+from hashlib import sha256
+import json
+from pathlib import Path
+import re
+
+import phase2d_quarantine_guard as V3
+import phase2d_restricted_development_eligibility_v1 as ELIG
+
+ROOT = Path(__file__).resolve().parent
+BASE = Path('results/phase2d')
+ATT_REL = BASE / 'restricted_dev_owner_attestation_v1.json'
+CLOSE_REL = BASE / 'restricted_dev_scope_closure_v1.json'
+
+# These are exact, previously verified evidence hashes, not mutable labels.
+SOURCES = {
+    'proposal': ('results/phase2d/restricted_development_eligibility_proposal_v1.json',
+                 '3be9c55c8d835e52cca1c96f4249211ebadabfd8ab17a0f94a23f9d5db1cc024'),
+    'technical_review': ('results/phase2d/phase2d_restricted_development_technical_feasibility_review_v1.json',
+                         '9dc2e7939d71f7c24bf7eb7dd658539f99a4ab414e8b3f3670980857927aa433'),
+    'self_review': ('results/phase2d/phase2d_self_review_oracle_readiness_v1.json',
+                    '3fcda106d30c2b5c17cf6e2f20ac9aeef71ecfa533dbf2ac199718ce14c436cb'),
+    'contract_packet': ('results/phase2d/restricted_development_contract_review_packet_v1.json',
+                        '0be908f69bf7fcd3fdaaa9ed69e7d92a540b9ce1ce486d17d46a05e5e3d6f118'),
+}
+
+# Fixed eight-task protocol: HumanEval/132 and /91 remain conditional and EXCLUDED.
+TASK_HASHES = {
+    'HumanEval/129': '670be092d953b4e25085e2d70bff872c2a78ad2bc3818d5de2842e79f95b1eb3',
+    'HumanEval/69': '16ac640af04cdc0c32c1800501d5eacb7f04046f25aff2b9e4b33ddaa8578870',
+    'HumanEval/112': 'a363c6ac3bf8f70c9df33afa96bb8f9103f101726333206530602e165498d2bc',
+    'HumanEval/90': '134b146d85ca1bac613d96c5e419eec6097cd5076901416d24c4e99400fdc891',
+    'HumanEval/111': '03f92926d51519bbd8b443298f0cec9ce3557c9590073fd5d33ecc662bb55c75',
+    'HumanEval/74': 'db4f95f4b8c1d5a6f56380aa0401f3859befa6769726c83c7a01dc032083ac5d',
+    'HumanEval/148': 'e91f3cdaf02eb6f474d3a3abb103cd83f6e20412e60eb5ca4d7b7ce5252baa6c',
+    'HumanEval/150': '9e4b1ac062dc2e140764496243c618bd82dc1975f67e6c65aca0e8779d795b1c',
+}
+EXCLUDED = ('HumanEval/132', 'HumanEval/91')
+ACK = ('I accept the restricted eight-task Phase 2D development-selection freeze as the '
+       'research owner. This is self-attested, not independent human review; the '
+       'global split remains draft and no model generation, candidate evaluation, '
+       'validation, held-out or temporal access is authorized by this record.')
+HEX64 = re.compile(r'^[0-9a-f]{64}$')
+
+class Phase2DClosureError(RuntimeError):
+    pass
+
+def require(ok, detail):
+    if not ok:
+        raise Phase2DClosureError(detail)
+
+def digest(raw: bytes) -> str:
+    return sha256(raw).hexdigest()
+
+def serialize(doc: dict) -> bytes:
+    return (json.dumps(doc, indent=2, sort_keys=True, ensure_ascii=True) + '\n').encode('utf-8')
+
+def read_json(path: Path) -> tuple[dict, str]:
+    require(not path.is_symlink() and path.is_file(), f'Missing/unsafe file: {path}')
+    raw = path.read_bytes()
+    try:
+        doc = json.loads(raw)
+    except (UnicodeError, ValueError) as e:
+        raise Phase2DClosureError(f'Invalid JSON: {path}') from e
+    require(isinstance(doc, dict), f'Expected JSON object: {path}')
+    return doc, digest(raw)
+
+def evidence_file(rel: str, sha: str) -> tuple[dict, str]:
+    preferred = ROOT / rel
+    alternatives = [preferred]
+    # Previous deliverables were sometimes saved directly to project root.
+    if Path(rel).name != rel:
+        alternatives.append(ROOT / Path(rel).name)
+    found = []
+    for path in alternatives:
+        if path.is_file() or path.is_symlink():
+            doc, actual = read_json(path)
+            require(actual == sha, f'STALE/TAMPERED source: {path}; found {actual}')
+            found.append((doc, str(path.relative_to(ROOT))))
+    require(found, f'Missing {rel}. Copy source artifact to results/phase2d/ (or project root).')
+    require(all(x[0] == found[0][0] for x in found), f'Conflicting copies: {rel}')
+    return found[0]
+
+def verify_sources() -> dict:
+    # Verify original public files, normalized prompt hashes, partitions,
+    # three historical reviews and all original V3 quarantine records.
+    manifest, quarantined = V3.load_verified_policy(ROOT)
+    tasks = manifest.get('tasks', {})
+    require(manifest.get('status') == 'draft_requires_review_and_freeze',
+            'The baseline manifest changed; do not use an old scoped closure')
+    require(len(tasks) == 3333 and len(quarantined) == 21, 'Unexpected corpus/quarantine census')
+    require(set(V3.PILOT_TASKS) == {'HumanEval/0','HumanEval/1','MBPP/545'},
+            'Original V3 pilot changed')
+    parts = Counter(row['partition'] for row in tasks.values())
+    require(parts == Counter(development=403, validation=493,
+                             held_out=1382, held_out_temporal_pending=1055),
+            'Original partition counts changed')
+    for tid, sha in TASK_HASHES.items():
+        require(HEX64.fullmatch(sha) is not None, f'Bad digest literal: {tid}')
+        require(tasks.get(tid, {}).get('public_prompt_sha256') == sha, f'Prompt digest changed: {tid}')
+        require(tasks[tid]['partition'] == 'development', f'NOT a development task: {tid}')
+        require(tid not in quarantined and tid not in V3.PILOT_TASKS,
+                f'Original pilot or quarantine conflict: {tid}')
+    for tid in EXCLUDED:
+        require(tasks.get(tid, {}).get('partition') == 'development',
+                f'Conditional task changed partition: {tid}')
+    docs, pins = {}, {}
+    for name, (rel, expected) in SOURCES.items():
+        docs[name], location = evidence_file(rel, expected)
+        pins[name] = {'path': location, 'sha256': expected}
+
+    proposal = docs['proposal']
+    technical = docs['technical_review']
+    review = docs['self_review']
+    packet = docs['contract_packet']
+    require(proposal.get('execution_authorized') is False and
+            proposal.get('split_freeze_authorized') is False, 'Proposal is not provisional')
+    require(technical.get('candidate_generation_authorized') is False and
+            technical.get('split_freeze_authorized') is False, 'Technical review permission mismatch')
+    require(review.get('execution_authorized') is False and
+            review.get('split_freeze_authorized') is False, 'Self-review permission mismatch')
+    require(packet.get('execution_authorized') is False and
+            packet.get('split_freeze_authorized') is False, 'Packet permission mismatch')
+    require(technical.get('source_proposal_sha256') == SOURCES['proposal'][1],
+            'Technical review proposal hash differs')
+    require(review.get('source_packet_sha256') == SOURCES['contract_packet'][1],
+            'Self-review contract packet hash differs')
+    require(packet.get('proposal_sha256') == SOURCES['proposal'][1],
+            'Contract packet proposal hash differs')
+    require(proposal.get('independent_human_review_completed') is False and
+            technical.get('independent_human_review_completed') is False and
+            packet.get('independent_human_review_completed') is False,
+            'Unexpected independent human review claim')
+    short = proposal.get('shortlist_for_manual_review', [])
+    require(len(short) == 24 and len({row['task_id'] for row in short}) == 24,
+            'Invalid saved shortlist')
+    short_ids = {row['task_id'] for row in short}
+    require(set(TASK_HASHES) | set(EXCLUDED) <= short_ids,
+            'Eight selected or two conditional tasks missing from shortlist')
+    for row in short:
+        require(tasks[row['task_id']]['public_prompt_sha256'] == row['public_prompt_sha256'] and
+                tasks[row['task_id']]['partition'] == 'development',
+                f'Saved shortlist drift: {row["task_id"]}')
+    self_review = review.get('task_reviews', [])
+    require(len(self_review) == 10, 'Expected 10 self-review records')
+    require({r['task_id'] for r in self_review} == set(TASK_HASHES) | set(EXCLUDED),
+            'Unexpected self-review task set')
+    for row in self_review:
+        require(row['manifest_public_prompt_sha256'] == tasks[row['task_id']]['public_prompt_sha256'],
+                f'Self-review prompt changed: {row["task_id"]}')
+        require(row.get('human_approval_recorded') is False and
+                row.get('model_execution_authorized') is False,
+                'Earlier self-review claims unexpected approval')
+    tech_rows = technical.get('reviewed_tasks', [])
+    require(len(tech_rows) == 24, 'Expected 24 technical review task records')
+    require({r['task_id'] for r in tech_rows} == short_ids,
+            'Technical review task identities differ from shortlist')
+    for row in tech_rows:
+        require(row['source_manifest_prompt_sha256'] == tasks[row['task_id']]['public_prompt_sha256'],
+                f'Technical prompt changed: {row["task_id"]}')
+        require(row.get('approval_or_execution_authorized') is False,
+                'Unexpected authorization in technical review')
+    packet_rows = packet.get('tasks', [])
+    require(len(packet_rows) == 24 and {r['task_id'] for r in packet_rows} == short_ids,
+            'Contract packet missing selected tasks')
+    for row in packet_rows:
+        require(row['manifest_public_prompt_sha256'] == tasks[row['task_id']]['public_prompt_sha256'],
+                f'Contract packet prompt mismatch: {row["task_id"]}')
+        require(row['partition'] == 'development' and row.get('execution_authorized') is False,
+                f'Contract packet permission/partition mismatch: {row["task_id"]}')
+    # Recompute the entire 264-edge lexical+adjudication screen, rather than
+    # simply believing the saved shortlist. ELIG.build verifies its source pins.
+    fresh = ELIG.build()
+    require(fresh == proposal, 'Source-backed eligibility recomputation differs from saved proposal')
+    require(fresh['summary']['known_or_lexical_risk_edges'] == 264 and
+            fresh['summary']['static_prefilter_survivors_total'] == 118,
+            'Expected risk screen changed')
+    selected_rows = [row for row in short if row['task_id'] in TASK_HASHES]
+    require(len(selected_rows) == 8, 'Selected eight missing from saved shortlist')
+    return {
+        'source_pins': pins,
+        'baseline_manifest_status': manifest['status'],
+        'baseline_partition_counts': dict(sorted(parts.items())),
+        'baseline_v3_quarantine_count': len(quarantined),
+        'risk_screen_edges': fresh['summary']['known_or_lexical_risk_edges'],
+        'scope_selected': [{'task_id': x, 'partition': 'development',
+                            'manifest_public_prompt_sha256': TASK_HASHES[x]}
+                           for x in sorted(TASK_HASHES)],
+        'deferred_semantics_tasks': sorted(EXCLUDED),
+        'global_freeze_authorized': False,
+        'execution_authorized': False,
+        'review_type': 'solo_researcher_self_attested_with_ai_assisted_technical_review',
+    }
+
+def template(verified: dict) -> dict:
+    return {
+        'record_type': 'PHASE2D_RESTRICTED_DEVELOPMENT_OWNER_ATTESTATION_V1',
+        'selected_tasks': verified['scope_selected'],
+        'source_pins': verified['source_pins'],
+        'owner_accepted': False,
+        'owner_identity': '',
+        'owner_review_utc': '',
+        'exact_acknowledgement': '',
+        'approval_scope': 'restricted_development_task_selection_only',
+        'independent_human_review_completed': False,
+        'execution_authorized': False,
+        'global_split_freeze_authorized': False,
+        'original_v3_guard_modified': False,
+        'notes': [
+            'Self-attestation does NOT establish independent reviewer agreement.',
+            'No candidate generation or program evaluation is granted by this record.',
+            'The baseline 3333-task manifest remains draft; this is a scoped protocol selection freeze.',
+            'LiveCodeBench temporal provenance is not established and remains excluded.',
+            'Known semantic transfer risks are only partially screened; no generalization claim.',
+        ],
+    }
+
+def owner_check(record: dict, verified: dict) -> None:
+    expected = template(verified)
+    editable = {'owner_accepted','owner_identity','owner_review_utc','exact_acknowledgement'}
+    require(set(record) == set(expected), 'Owner attestation has unexpected/missing fields')
+    for k in expected:
+        if k not in editable:
+            require(record[k] == expected[k], f'Locked attestation field changed: {k}')
+    require(record['owner_accepted'] is True,
+            'OWNER ACTION NEEDED: set owner_accepted to boolean true after reading caveats')
+    require(record['exact_acknowledgement'] == ACK,
+            'OWNER ACTION NEEDED: exact scope acknowledgement does not match')
+    name = record['owner_identity']
+    require(isinstance(name, str) and 2 <= len(name.strip()) <= 200,
+            'OWNER ACTION NEEDED: provide your real researcher identity')
+    stamp = record['owner_review_utc']
+    try:
+        dt = datetime.fromisoformat(stamp.replace('Z','+00:00'))
+        require(dt.tzinfo is not None and dt.utcoffset() is not None,
+                'Owner timestamp must include UTC offset')
+    except (ValueError, TypeError, AttributeError) as exc:
+        raise Phase2DClosureError('OWNER ACTION NEEDED: ISO8601 timezone-aware owner_review_utc') from exc
+    require(dt <= datetime.now(timezone.utc).astimezone(dt.tzinfo),
+            'Owner review timestamp is in the future')
+
+def closure_document(verified: dict, owner_sha: str) -> dict:
+    return {
+        'schema_version': 1,
+        'record_type': 'PHASE2D_EIGHT_TASK_RESTRICTED_SELECTION_FREEZE_V1',
+        'scoped_phase2d_status': 'CLOSED_FOR_EIGHT_TASK_DEVELOPMENT_SELECTION_ONLY',
+        'original_global_manifest_status': 'draft_requires_review_and_freeze',
+        'global_3333_task_split_frozen': False,
+        'scope_only_task_ids': sorted(TASK_HASHES),
+        'deferred_conditional_task_ids': sorted(EXCLUDED),
+        'selected_task_prompt_sha256': dict(sorted(TASK_HASHES.items())),
+        'verified_source_provenance': verified['source_pins'],
+        'owner_attestation_sha256': owner_sha,
+        'owner_review_type': 'self_attested_not_independent_human_review',
+        'independent_human_review_completed': False,
+        'model_or_candidate_execution_authorized': False,
+        'validation_heldout_temporal_use_authorized': False,
+        'original_v3_guard_modified': False,
+        'risks_remaining': [
+            'The global draft split and temporal provenance are not frozen.',
+            'Overlap sampling is not exhaustive and pretraining contamination is not ruled out.',
+            'Oracle implementation/testing, sandbox integration, and budget comparisons are Phase 2F work.',
+            'Separate owner authorization and a guarded execution policy are needed before model/candidate calls.',
+        ],
+    }
+
+def run(cmd: str):
+    verified = verify_sources()
+    print('='*73)
+    print('PHASE 2D: RESTRICTED DEVELOPMENT SELECTION CLOSURE V1')
+    print('='*73)
+    print('Original source provenance and V3 quarantine: VERIFIED')
+    print('Eligibility recomputed from source evidence: MATCH')
+    print('Original partition: draft_requires_review_and_freeze (UNCHANGED)')
+    print('Scope: 8 HumanEval DEVELOPMENT tasks; conditional tasks held:', ', '.join(EXCLUDED))
+    print('Global split frozen: NO; candidate execution authorized: NO')
+    print('Eight scope task IDs:', ', '.join(sorted(TASK_HASHES)))
+    if cmd == 'preview':
+        print('PREVIEW PASSED. No files modified.')
+        return
+    if cmd == 'prepare':
+        path = ROOT / ATT_REL
+        path.parent.mkdir(parents=True, exist_ok=True)
+        raw = serialize(template(verified))
+        with path.open('xb') as f:
+            f.write(raw)
+        print('CREATED INACTIVE ATTESTATION:', ATT_REL)
+        print('SHA256:', digest(raw))
+        print('Edit ONLY: owner_accepted, owner_identity, owner_review_utc, exact_acknowledgement')
+        print('ACKNOWLEDGEMENT TO COPY EXACTLY:\n'+ACK)
+        print('NO APPROVAL YET. No source/policy modified.')
+        return
+    att, att_sha = read_json(ROOT / ATT_REL)
+    if cmd == 'attest':
+        require(att == template(verified),
+                'Attestation must be the original inactive template; existing acceptance cannot be overwritten')
+        print('\nRESEARCH OWNER SELF-ATTESTATION: limited selection freeze only')
+        print('No independent reviewer, no global freeze, no code-execution permission.')
+        print('Review and accept this exact limitation statement:')
+        print(ACK)
+        identity = input('Your actual researcher identity: ').strip()
+        confirmation = input('Type exactly I ACCEPT RESTRICTED PHASE 2D SELECTION: ').strip()
+        require(confirmation == 'I ACCEPT RESTRICTED PHASE 2D SELECTION',
+                'Owner did not accept the explicit, restricted protocol')
+        att.update({
+            'owner_accepted': True,
+            'owner_identity': identity,
+            'owner_review_utc': datetime.now(timezone.utc).isoformat(),
+            'exact_acknowledgement': ACK,
+        })
+        owner_check(att, verified)
+        path = ROOT / ATT_REL
+        require(not path.is_symlink() and path.is_file(), 'Owner template changed before acceptance')
+        require(digest(path.read_bytes()) == att_sha,
+                'Owner template changed during review; retry after investigation')
+        # Only the explicitly edited owner template is rewritten; original sources are never modified.
+        with path.open('wb') as f:
+            f.write(serialize(att))
+        print('OWNER ATTESTATION RECORDED:', ATT_REL)
+        print('SHA256:', digest(path.read_bytes()))
+        print('Selection is not yet frozen; run --finalize and --check.')
+        return
+    owner_check(att, verified)
+    if cmd == 'finalize':
+        path = ROOT / CLOSE_REL
+        path.parent.mkdir(parents=True, exist_ok=True)
+        raw = serialize(closure_document(verified, att_sha))
+        with path.open('xb') as f:
+            f.write(raw)
+        print('SCOPED PHASE 2D SELECTION FREEZE CREATED:', CLOSE_REL)
+        print('SHA256:', digest(raw))
+        print('Global split remains draft. No execution or guard modification authorized.')
+        return
+    frozen, actual = read_json(ROOT / CLOSE_REL)
+    require(frozen == closure_document(verified, att_sha),
+            'SCOPED CLOSURE HAS CHANGED OR ITS PROVENANCE IS STALE')
+    print('SCOPED PHASE 2D COMPLETION CHECK: PASS')
+    print('CLOSURE SHA256:', actual)
+    print('Global Phase 2D corpus freeze: NOT COMPLETE; distinct evaluation gate remains.')
+    print('No source files, V3 guard, or task partitions modified.')
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    choices = parser.add_mutually_exclusive_group(required=True)
+    for name in ('preview','prepare','attest','finalize','check'):
+        choices.add_argument('--'+name, action='store_true')
+    options = parser.parse_args()
+    command = next(name for name in ('preview','prepare','attest','finalize','check')
+                   if getattr(options, name))
+    try:
+        run(command)
+    except (Phase2DClosureError, V3.TaskPolicyError, RuntimeError, FileNotFoundError,
+            KeyError, TypeError, ValueError, AssertionError) as exc:
+        raise SystemExit(f'PHASE2D FAIL-CLOSED: {exc}') from exc
+
+if __name__ == '__main__':
+    main()

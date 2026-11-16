@@ -1,0 +1,302 @@
+{
+  "assessment_origin": "LLM-assisted researcher-facing technical assessment; not independent human review and not an approval decision",
+  "created_utc": "2026-11-14",
+  "execution_authorized": false,
+  "guard_change_authorized": false,
+  "policy_status": "draft_requires_review_and_freeze",
+  "record_type": "PHASE2D_LLM_ASSISTED_SELF_REVIEW_AND_ORACLE_READINESS_V1_NOT_POLICY_APPROVAL",
+  "reference_frameworks": [
+    "Chen et al. 2021 HumanEval",
+    "Liu et al. 2023 EvalPlus",
+    "Chen et al. 2023 CodeT",
+    "Li et al. 2025 S*",
+    "Claessen and Hughes 2000 QuickCheck",
+    "Zeller et al. The Fuzzing Book",
+    "Chen et al. 2018 Metamorphic Testing review",
+    "Klees et al. 2018 Evaluating Fuzz Testing",
+    "Jain et al. 2025 LiveCodeBench",
+    "Solar-Lezama 2008 CEGIS"
+  ],
+  "research_readiness_summary": {
+    "authorized_for_candidate_generation": 0,
+    "conditional_semantics_gate": 2,
+    "ready_to_construct_bounded_oracles": 8
+  },
+  "safety_and_rigor_gates": [
+    "Research owner independently signs versioned scope declaration; this addendum never substitutes for authorization",
+    "Confirm valid bounded domains and input/output serialization for each task before generation",
+    "Implement each trusted oracle by two algorithmically distinct methods; reconcile all disagreement before using labels",
+    "Run trusted oracle self-tests and reviewed metamorphic invariants before using any candidate outputs",
+    "Freeze development challenge inputs before candidate evaluation and audit their SHA256",
+    "Execute generated candidate code only inside existing hardened pinned Docker image; never host Python exec/import",
+    "Keep validation, heldout and temporal_pending tasks inaccessible during iterative development",
+    "Record method budgets including token cost, calls, executions, and time; do not equate equal test count with equal compute",
+    "Label failures only when oracle agreement and a reproducible Docker counterexample exist; keep ambiguous cases unresolved",
+    "Keep self-review limitations explicit; later independent reviewer would strengthen publication claims but is not a prerequisite for exploratory development"
+  ],
+  "schema_version": 1,
+  "source_packet_path": "results/phase2d/restricted_development_contract_review_packet_v1.json",
+  "source_packet_sha256": "0be908f69bf7fcd3fdaaa9ed69e7d92a540b9ce1ce486d17d46a05e5e3d6f118",
+  "split_freeze_authorized": false,
+  "task_reviews": [
+    {
+      "human_approval_recorded": false,
+      "manifest_public_prompt_sha256": "670be092d953b4e25085e2d70bff872c2a78ad2bc3818d5de2842e79f95b1eb3",
+      "model_execution_authorized": false,
+      "raw_public_prompt_sha256": "417c9ed701884d14aff5ce42047f77711731af279eeeba3d3b685b92a8f29adb",
+      "task_id": "HumanEval/129",
+      "technical_assessment": {
+        "boundary": [
+          "k=1",
+          "k exceeding number of cells",
+          "corner and edge starts",
+          "repeated visits",
+          "shuffled grid permutations"
+        ],
+        "caveat": "For larger N or k, the brute-force checker is impractical; use bounded audit and prove greedy choice for the permitted domain.",
+        "domain": "N=2..4 square grids containing each integer 1..N*N once; k=1..8; valid cardinality and adjacency only",
+        "metamorphic": [
+          "Every output has exactly k values",
+          "Adjacent output values map to edge-neighbor grid cells",
+          "Output begins with the grid minimum (1)"
+        ],
+        "oracle_a": "Lexicographically greedy path: start with unique 1; repeatedly choose the smallest valued in-bounds neighbor; revisit allowed.",
+        "oracle_b": "Exhaustively enumerate adjacent paths for N<=3 and k<=7, take lexicographically minimal value sequence; cross-check oracle A.",
+        "status": "advance_to_oracle_construction"
+      }
+    },
+    {
+      "human_approval_recorded": false,
+      "manifest_public_prompt_sha256": "adc4f6a8f8816a9b6e10c64c859ec35f7f626d6caa28990768ee73e54ad99b4d",
+      "model_execution_authorized": false,
+      "raw_public_prompt_sha256": "ceeef7227e3911edf98ea8a7c714116780f3468053e4cccc66bbb2dfa185c334",
+      "task_id": "HumanEval/132",
+      "technical_assessment": {
+        "boundary": [
+          "empty string",
+          "[]",
+          "[[]]",
+          "[][]",
+          "stray unmatched prefixes/suffixes",
+          "nested subsequence despite malformed whole input"
+        ],
+        "caveat": "The word subsequence (rather than substring) is decisive. Lock the precise interpretation using prompt examples before candidate generation; do not silently reinterpret malformed inputs.",
+        "domain": "Strings over characters [ and ] only, lengths 0..20; no other characters.",
+        "metamorphic": [
+          "Appending brackets cannot destroy an existing [ [] ] subsequence witness",
+          "Strings with fewer than 2 opens or 2 closes are false"
+        ],
+        "oracle_a": "Subsequence witness: true iff there exist positions i<j<k<l with characters [,[,],] respectively.",
+        "oracle_b": "For lengths <=12 enumerate all index subsequences, accept if a balanced subsequence contains depth >=2; compare to witness oracle.",
+        "status": "conditional_semantics_gate"
+      }
+    },
+    {
+      "human_approval_recorded": false,
+      "manifest_public_prompt_sha256": "ae27965d9dcb2b553f76cc52f6d7e5af8c6f7e5738cca0b5c13822ab854593ec",
+      "model_execution_authorized": false,
+      "raw_public_prompt_sha256": "9445e82177f062459a801e24909bc856435701d82f1d67a9dad1f9d6fd0f6362",
+      "task_id": "HumanEval/91",
+      "technical_assessment": {
+        "boundary": [
+          "empty string",
+          "leading/trailing punctuation",
+          "consecutive delimiters",
+          "I alone",
+          "I after whitespace",
+          "Inside (not starting) sentence",
+          "capitalization"
+        ],
+        "caveat": "Meaning of word I in contractions and extra punctuation is not explicitly defined; exclude these until contract review.",
+        "domain": "ASCII alphabetic words separated by spaces; sentence delimiters . ? !; no contractions, quotes, comma prefixes or other punctuation in initial development suite.",
+        "metamorphic": [
+          "Concatenating a non-I-starting sentence with a delimiter preserves prior count",
+          "Appending an I-starting sentence after a delimiter increases count by one"
+        ],
+        "oracle_a": "Split on .?! then strip leading whitespace; count segments whose first space-separated word is exactly uppercase I.",
+        "oracle_b": "Independent finite-state tokenizer that marks sentence start and accumulates words; compare on bounded strings.",
+        "status": "conditional_semantics_gate"
+      }
+    },
+    {
+      "human_approval_recorded": false,
+      "manifest_public_prompt_sha256": "16ac640af04cdc0c32c1800501d5eacb7f04046f25aff2b9e4b33ddaa8578870",
+      "model_execution_authorized": false,
+      "raw_public_prompt_sha256": "62a5a2d0332d73a27da26ab1a46a7302d27bff719d9d354887d0a27a7cdc776a",
+      "task_id": "HumanEval/69",
+      "technical_assessment": {
+        "boundary": [
+          "no qualifying value",
+          "duplicate runs at exact threshold",
+          "multiple qualifying values",
+          "all ones",
+          "large values relative to list length"
+        ],
+        "caveat": "Do not extend to negative or zero values; task promises positive integers.",
+        "domain": "Nonempty lists of positive integers; lengths 1..60; values 1..100.",
+        "metamorphic": [
+          "Input permutation does not change answer",
+          "Duplicating all elements cannot make a previously qualifying value disqualify"
+        ],
+        "oracle_a": "Frequency map; choose max v>0 where count(v)>=v or -1.",
+        "oracle_b": "For every distinct value v count occurrences by independent scanning loop; choose maximum satisfying threshold.",
+        "status": "advance_to_oracle_construction"
+      }
+    },
+    {
+      "human_approval_recorded": false,
+      "manifest_public_prompt_sha256": "a363c6ac3bf8f70c9df33afa96bb8f9103f101726333206530602e165498d2bc",
+      "model_execution_authorized": false,
+      "raw_public_prompt_sha256": "1a0e5435912522547470d17b91604c47dbff24e81d145a7f2b79c281eef6b033",
+      "task_id": "HumanEval/112",
+      "technical_assessment": {
+        "boundary": [
+          "empty s",
+          "empty c",
+          "all chars removed",
+          "repeated chars in c",
+          "mixed upper/lower cases",
+          "odd/even palindrome lengths"
+        ],
+        "caveat": "Standard definition treats empty string as palindrome; explicitly audit against spec examples if any new interpretation arises.",
+        "domain": "ASCII alphabetic s and c strings of lengths 0..80; case sensitive.",
+        "metamorphic": [
+          "Permuting c does not change the answer",
+          "Adding to c a character absent from s does not change the answer"
+        ],
+        "oracle_a": "Filter s by character membership in set(c); compare filtered result to its reversal.",
+        "oracle_b": "Repeatedly remove each character in c from s via independent string replacement; use two-pointer palindrome check.",
+        "status": "advance_to_oracle_construction"
+      }
+    },
+    {
+      "human_approval_recorded": false,
+      "manifest_public_prompt_sha256": "134b146d85ca1bac613d96c5e419eec6097cd5076901416d24c4e99400fdc891",
+      "model_execution_authorized": false,
+      "raw_public_prompt_sha256": "c411484e97c83ae8e5869ae414e5687f429deda4f5fb49e367e60c85635fed1e",
+      "task_id": "HumanEval/90",
+      "technical_assessment": {
+        "boundary": [
+          "empty",
+          "single element",
+          "all equal",
+          "two distinct",
+          "negative values",
+          "duplicate minima",
+          "permuted list"
+        ],
+        "caveat": "Second smallest is second DISTINCT smallest, as demonstrated by [1,1] -> None.",
+        "domain": "Lists of integers length 0..80; values -100..100.",
+        "metamorphic": [
+          "Reordering list preserves result",
+          "Duplicating any existing value preserves result"
+        ],
+        "oracle_a": "Return sorted(set(lst))[1] if >=2 distinct values, else None.",
+        "oracle_b": "Single pass track smallest and second distinct smallest; no sets or sorting.",
+        "status": "advance_to_oracle_construction"
+      }
+    },
+    {
+      "human_approval_recorded": false,
+      "manifest_public_prompt_sha256": "03f92926d51519bbd8b443298f0cec9ce3557c9590073fd5d33ecc662bb55c75",
+      "model_execution_authorized": false,
+      "raw_public_prompt_sha256": "c30d14cdaa12a3c8fd5b0cf5ce64622c84276ea5f9709d0494b836617938da59",
+      "task_id": "HumanEval/111",
+      "technical_assessment": {
+        "boundary": [
+          "empty string",
+          "one token",
+          "all tied",
+          "one dominant token",
+          "different token orders"
+        ],
+        "caveat": "Exclude repeated whitespace and multi-character tokens until an explicit expanded domain is reviewed.",
+        "domain": "Empty string, or one-character lowercase a-z tokens separated by one ASCII space; 1..80 tokens.",
+        "metamorphic": [
+          "Token permutation does not change frequency mapping",
+          "Duplicating every token doubles each returned maximum count"
+        ],
+        "oracle_a": "Count tokens with a frequency map; return all entries tied at maximum; empty -> {}.",
+        "oracle_b": "For each unique token count exact token matches by scanning split input; collect all argmax counts.",
+        "status": "advance_to_oracle_construction"
+      }
+    },
+    {
+      "human_approval_recorded": false,
+      "manifest_public_prompt_sha256": "db4f95f4b8c1d5a6f56380aa0401f3859befa6769726c83c7a01dc032083ac5d",
+      "model_execution_authorized": false,
+      "raw_public_prompt_sha256": "9662ed6743a83d0c34963151a98c5cdc9d33053cf3b26212adb7ff8abf9e3617",
+      "task_id": "HumanEval/74",
+      "technical_assessment": {
+        "boundary": [
+          "two empty lists",
+          "equal total char counts",
+          "different list lengths",
+          "empty-string items",
+          "case changes",
+          "long and short mixtures"
+        ],
+        "caveat": "Return exact list contents and preserve first-argument tie convention.",
+        "domain": "Two lists of ASCII strings, each length 0..20; each string length 0..40.",
+        "metamorphic": [
+          "Permuting strings within either list preserves which argument is returned",
+          "Replacing strings with equal-length strings preserves choice"
+        ],
+        "oracle_a": "Compare sum(map(len,lst1)) and sum(map(len,lst2)); return first list on a tie.",
+        "oracle_b": "Independent loops accumulate character counts by iterating over individual strings and characters; select list with smaller total.",
+        "status": "advance_to_oracle_construction"
+      }
+    },
+    {
+      "human_approval_recorded": false,
+      "manifest_public_prompt_sha256": "e91f3cdaf02eb6f474d3a3abb103cd83f6e20412e60eb5ca4d7b7ce5252baa6c",
+      "model_execution_authorized": false,
+      "raw_public_prompt_sha256": "6cc1444376f53913622a070cd5c475b9cc33b4e199573da8e2b9051d689a314d",
+      "task_id": "HumanEval/148",
+      "technical_assessment": {
+        "boundary": [
+          "adjacent planets",
+          "same planet",
+          "reversed endpoints",
+          "far endpoints",
+          "invalid one/both names"
+        ],
+        "caveat": "Only eight official planet names are in the specified domain; do not accept aliases or case-normalize.",
+        "domain": "Valid names are exactly Mercury Venus Earth Mars Jupiter Saturn Uranus Neptune, plus selected invalid name strings; case sensitive.",
+        "metamorphic": [
+          "Swapping endpoints leaves returned tuple unchanged",
+          "Output order always matches canonical solar order"
+        ],
+        "oracle_a": "Index lookup in canonical planet order; return tuple of strictly intermediate names between the endpoints, sorted sun-outward.",
+        "oracle_b": "Iterate canonical planet list with numeric rank; select planets strictly between endpoint ranks; invalid -> empty tuple.",
+        "status": "advance_to_oracle_construction"
+      }
+    },
+    {
+      "human_approval_recorded": false,
+      "manifest_public_prompt_sha256": "9e4b1ac062dc2e140764496243c618bd82dc1975f67e6c65aca0e8779d795b1c",
+      "model_execution_authorized": false,
+      "raw_public_prompt_sha256": "d3c5a3ef8fbe608f4c6ddb2b0209fe20ac537b827fb3252e805681c6c92c3a14",
+      "task_id": "HumanEval/150",
+      "technical_assessment": {
+        "boundary": [
+          "n=0,1,2",
+          "small composites",
+          "perfect squares",
+          "large primes",
+          "x==y",
+          "negative and zero x/y"
+        ],
+        "caveat": "Prompt does not establish behavior for noninteger n; exclude. A later review may extend integer n below zero.",
+        "domain": "Integer n=0..10000, integer x and y in -1000..1000.",
+        "metamorphic": [
+          "Changing x cannot affect output when n composite",
+          "Changing y cannot affect output when n prime"
+        ],
+        "oracle_a": "Integer trial division primality; return x iff n prime else y.",
+        "oracle_b": "Independent sieve of Eratosthenes table for n <=10000, with primes determined by sieve; choose x/y.",
+        "status": "advance_to_oracle_construction"
+      }
+    }
+  ]
+}
